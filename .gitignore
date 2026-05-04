@@ -1,0 +1,18 @@
+# Build / test artifacts — regenerable, do not track
+research-viz-workspace/
+research-viz.skill
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python noise (in case anyone runs the scaffolding scripts in-tree)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env

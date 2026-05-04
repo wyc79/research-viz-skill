@@ -1,0 +1,59 @@
+{
+  "skill_name": "research-viz",
+  "evals": [
+    {
+      "id": 1,
+      "name": "parser-messy-clinical-csv",
+      "prompt": "I've got a clinical trial dataset at data/trial_data_messy.csv that I need to clean up before I can do anything with it. There are some missing values and I think the patient_age column has some text mixed in with the numbers. Can you set up a visualizations/ workspace next to data/ and run the parser? For missing values use median for the numeric columns and just drop rows where notes is missing. Keep the visit_date column as-is for now.",
+      "expected_output": "A `visualizations/` folder is scaffolded next to `data/` with the full structure (info/, scripts/, parse_input.sh, etc.). The parser is run non-interactively, producing `intermediate_data/parsed_results.csv` (200 rows, columns including patient_age as numeric and notes with no missing). `parsed_results.meta.json` records the strategies. `info/context.md` is updated with what was done.",
+      "files": ["evals/files/trial_data_messy.csv"],
+      "expectations": [
+        "A visualizations/ directory exists at the project root",
+        "visualizations/scripts/parser.py exists",
+        "visualizations/scripts/plot_gen.py exists",
+        "visualizations/scripts/helpers/utils.py exists",
+        "visualizations/parse_input.sh exists and is executable",
+        "visualizations/generate_plot.sh exists",
+        "visualizations/interactive_page.sh exists",
+        "visualizations/info/context.md exists and mentions parser/parsing/cleaning",
+        "visualizations/info/how_to_use.md exists",
+        "visualizations/intermediate_data/parsed_results.csv exists and has 200 rows or fewer (since drop_row may remove some)",
+        "visualizations/intermediate_data/parsed_results.meta.json exists and records the strategies applied",
+        "patient_age column in parsed_results.csv is numeric (no string values like 'unknown' or 'N/A' remain)",
+        "blood_pressure column in parsed_results.csv has no NaN values (median was applied)",
+        "context.md was updated to note what subskill ran and where outputs landed"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "plotgen-multi-panel-flowers",
+      "prompt": "I have a flowers dataset (data/flowers.csv) that's already clean. Set up the visualizations/ workspace and produce two plots for me: (1) a scatter of petal_length vs petal_width colored by species, and (2) a violin plot of sepal_length per species. Then update the context file.",
+      "expected_output": "visualizations/ scaffolded. parser run (no missing data, so it should pass through quickly). Two plot subfolders created under plots/ with figure.png, figure.pdf, and data.csv inside each. context.md mentions both plots.",
+      "files": ["evals/files/flowers.csv"],
+      "expectations": [
+        "visualizations/ directory exists with the full scaffolded structure",
+        "visualizations/intermediate_data/parsed_results.csv exists with 150 rows",
+        "At least one subfolder under visualizations/plots/ contains a figure.png file related to petal length vs petal width or scatter",
+        "At least one subfolder under visualizations/plots/ contains a figure.png related to violin or sepal_length per species",
+        "Each plot subfolder contains a data.csv file (the tidy data used to make the plot)",
+        "context.md mentions both plots and their locations or slugs"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "interactive-streamlit-sensor-log",
+      "prompt": "I want a streamlit dashboard for my sensor data at data/sensor_log.csv. Set up the workspace, parse the data, and build a streamlit page that lets me filter by site and sensor and shows the time series of value. Don't actually launch streamlit — just produce all the files so I can run interactive_page.sh myself.",
+      "expected_output": "Full visualizations/ scaffolded, sensor_log.csv parsed (no missing strategy needed), and a streamlit page added under streamlit/index.py or streamlit/pages/ that filters by site/sensor and plots a time series. context.md updated.",
+      "files": ["evals/files/sensor_log.csv"],
+      "expectations": [
+        "visualizations/ directory exists with full scaffolding",
+        "visualizations/intermediate_data/parsed_results.csv exists with 800 rows",
+        "visualizations/streamlit/index.py exists",
+        "Either streamlit/index.py or some file under streamlit/pages/ contains code that filters by 'site' and 'sensor' (uses st.selectbox/multiselect/radio for these columns)",
+        "Either streamlit/index.py or some file under streamlit/pages/ contains code that plots value over time (uses st.line_chart, sns.lineplot, or st.altair_chart with x=ts and y=value)",
+        "context.md was updated to mention the streamlit dashboard / filters / what page was added",
+        "interactive_page.sh exists and the agent did NOT actually run it (no live streamlit process needs to have been started)"
+      ]
+    }
+  ]
+}
