@@ -3,6 +3,11 @@ newthoughts.txt
 # Build / test artifacts — regenerable, do not track
 research-viz.skill
 
+# example2_brain BraTS data is multi-GB and obtained from Kaggle — do not track.
+# Reconstructed NIfTI volumes under intermediate_data/ are derivative and also large.
+examples/example2_brain/data/
+examples/example2_brain/visualizations/intermediate_data/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

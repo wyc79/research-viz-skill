@@ -4,11 +4,11 @@
 
 ## Style guide
 
-_(none yet — populated by the **style_infer** subskill once a reference paper / figure / brand guide is provided, or once the user expresses styling preferences)_
+🟡 **Placeholder** — `info/style_guide.md` exists with the scaffold defaults but no project-specific style decisions have been recorded yet. `plot_gen` and `interactive` use the seaborn `colorblind` palette + `set_research_theme()` rcParams. Drop reference materials into `info/style_refs/` and run **style_infer** to populate the guide; the Status line in `style_guide.md` flips to 🟢 *Active* once that happens.
 
-<!-- When style_infer runs, replace the line above with:
+<!-- After style_infer fills the guide, replace the paragraph above with:
 
-**Style guide active.** This project has a visualization style guide at [`info/style_guide.md`](style_guide.md), built from references in `info/style_refs/`. Read it before any plot_gen or interactive work and follow it for every new figure / page. Mirror the palette / typography / plot-type preferences into `PROJECT_PALETTE` (in `scripts/plot_gen.py`) and the `PROJECT_RECIPES` entries. Per-plot overrides live in the same guide. The guide is a *guide*, not a strict standard — drive forward, don't audit old code.
+🟢 **Style guide active.** This project has a visualization style guide at [`info/style_guide.md`](style_guide.md), built from references in `info/style_refs/`. Read it before any plot_gen or interactive work and follow it for every new figure / page. Mirror the palette / typography / plot-type preferences into `PROJECT_PALETTE` (in `scripts/plot_gen.py`) and the `PROJECT_RECIPES` entries. Per-plot overrides live in the same guide. The guide is a *guide*, not a strict standard — drive forward, don't audit old code.
 -->
 
 ## Project at a glance

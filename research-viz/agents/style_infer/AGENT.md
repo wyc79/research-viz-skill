@@ -1,6 +1,8 @@
 # style_infer subskill
 
-Infer a project-wide visualization style from a reference paper (PDF) or example figure (image) and/or explicit user preferences, then write `visualizations/info/style_guide.md` so every subsequent plot_gen and interactive run inherits the same look.
+Infer a project-wide visualization style from a reference paper (PDF) or example figure (image) and/or explicit user preferences, then **fill in `visualizations/info/style_guide.md`** so every subsequent plot_gen and interactive run inherits the same look.
+
+`style_guide.md` is **always present** (the scaffold ships a placeholder with the Status line set to 🟡 *Placeholder*). This subskill's job is to flip that to 🟢 *Active*, populate the sections from the references / user notes, and re-render the affected plots. `info/style_refs/` is also always present (ships with a README explaining what goes there) — you drop the verbatim reference files into it.
 
 Use when the user:
 
@@ -46,7 +48,7 @@ For each reference the user provides:
 3. **Check whether you can actually read the file.** If the running model has multi-modal vision and the file is an image / PDF you can decode, proceed to Step 2. If you can't read the image (no vision capability, or unsupported format), be honest with the user: "I've saved the reference at `info/style_refs/<file>` but I can't read it directly. Could you describe the style — palette / fonts / plot kinds — or shall I exit and you can come back with a model that can see images?" Do **not** invent style features you didn't actually observe.
 4. If the user gave plain-text preferences instead of (or alongside) a file, just record those — the reference set may be empty.
 
-If no `style_refs/` folder exists yet, create it.
+The `info/style_refs/` folder always exists (the scaffold ships it with a `README.md`). Just drop the file in — don't recreate the folder.
 
 ## Step 2 — Extract style features
 
@@ -74,9 +76,16 @@ If you genuinely can't infer something from the reference and the user didn't sp
 
 User-stated preferences **override** anything inferred from the reference. Example: if the reference uses red/blue but the user says "but make it colorblind-safe", switch to a colorblind-safe palette and note the override in style_guide.md ("user requested colorblind-safe; replaced inferred red/blue with Wong palette: #0072B2, #D55E00, …").
 
-## Step 4 — Write `info/style_guide.md`
+## Step 4 — Fill in `info/style_guide.md`
 
-Use this template (skip sections that don't apply):
+The scaffold ships a placeholder template at `info/style_guide.md` — **edit it in place**, don't recreate. Specifically:
+
+1. Flip the **Status** line from `🟡 Placeholder` to `🟢 Active`.
+2. Fill **References used** with one bullet per file in `style_refs/` and one prefixed `(user notes) —` for each plain-text user preference.
+3. Fill the per-section bullets below — replace the "_not specified_" placeholders only where you actually have a decision; leave the others as-is so future agents know that area still falls back to defaults.
+4. Add a first **Revisions** entry: `YYYY-MM-DD — initial guide built from <refs> + <user notes>`.
+
+The template you're filling in matches the structure below (skip sections that don't apply):
 
 ```markdown
 # Style guide

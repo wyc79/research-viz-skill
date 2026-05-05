@@ -1,0 +1,10 @@
+{
+  "slug": "3d-top",
+  "brain_mesh_triangles": 53814,
+  "tumor_mesh_triangles": 110774,
+  "brain_alpha": 0.18,
+  "tumor_alpha": 1.0,
+  "title": "3-D \u2014 superior (top) view",
+  "elev": 70,
+  "azim": -85
+}

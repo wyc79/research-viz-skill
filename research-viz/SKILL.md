@@ -142,9 +142,9 @@ Be cautious: users edit files outside the agent loop. The context file can drift
 ### Step 0 — Resumption protocol (run *before* doing anything else)
 
 1. Locate `./visualizations/info/`. If the whole `visualizations/` doesn't exist, it's a fresh start — skip to Step 1 (Pre-flight).
-2. **Read every `.md` in `info/` before doing anything else.** The set you might find:
+2. **Read every `.md` in `info/` before doing anything else.** The set you'll find:
    - `context.md` — recent activity log, project-at-a-glance, drift signals.
-   - `style_guide.md` (if present) — palette / typography / plot-type preferences + per-plot overrides. Read this before writing or modifying any plot_gen / streamlit code, regardless of whether `context.md` flags it.
+   - `style_guide.md` — **always present** (the scaffold ships a placeholder template). If the file's "Status" line says 🟡 *Placeholder*, no style decisions have been recorded yet and `plot_gen` is using its defaults; if 🟢 *Active*, follow the palette / typography / plot-type preferences + per-plot overrides exactly. Read this before writing or modifying any plot_gen / streamlit code, regardless of whether `context.md` flags it.
    - `project_specific_knowledge.md` (if present) — domain-specific things a previous agent learned (e.g. how to use `mne` for EEG topomaps). May reference `info/knowledge/<topic>.md` for longer notes — read those if the user's request touches that topic.
    - `how_to_use.md` — the human-facing guide. Skim so you don't contradict it; update it when the wrappers' behavior actually changes.
 3. Quick on-disk reconciliation: `ls visualizations/scripts/`, `ls visualizations/plots/`, `ls visualizations/intermediate_data/`, `ls visualizations/streamlit/pages/`, `ls visualizations/significance/` (if present), `ls visualizations/info/style_refs/` (if present), `ls visualizations/info/knowledge/` (if present) — and check `data/` for new or removed files. Compare to what `context.md` claims.
@@ -168,8 +168,8 @@ The expected layout is:
     ├── info/
     │   ├── context.md                    (recent activity log — written last)
     │   ├── how_to_use.md                 (human-facing guide)
-    │   ├── style_guide.md                (created by style_infer if any reference / preference exists)
-    │   ├── style_refs/                   (verbatim copies of reference papers / figures / brand guides)
+    │   ├── style_guide.md                (always present — placeholder template until style_infer fills it in)
+    │   ├── style_refs/                   (always present; ships with a README; fills with verbatim reference papers / figures / brand guides when style_infer runs)
     │   ├── project_specific_knowledge.md (created by domain_viz when a non-standard package was learned)
     │   └── knowledge/                    (only when project_specific_knowledge.md gets too long)
     ├── parse_input.sh
