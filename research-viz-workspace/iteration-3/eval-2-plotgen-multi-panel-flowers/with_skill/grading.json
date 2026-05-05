@@ -1,0 +1,75 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/scripts/plot_gen.py exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/plot_gen.py"
+    },
+    {
+      "text": "visualizations/scripts/helpers/utils.py exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/helpers/utils.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/generate_plot.sh exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/generate_plot.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "parsed CSV has 150 rows",
+      "passed": true,
+      "evidence": "rows=150 (file: flowers__parsed.csv)"
+    },
+    {
+      "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+      "passed": true,
+      "evidence": "png in plots/petal-length-vs-width-by-species"
+    },
+    {
+      "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+      "passed": true,
+      "evidence": "png in plots/sepal-length-violin-per-species"
+    },
+    {
+      "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+      "passed": true,
+      "evidence": "all png-bearing subdirs have a CSV"
+    },
+    {
+      "text": "context.md mentions both plots",
+      "passed": true,
+      "evidence": "matched /scatter/i in context.md"
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  }
+}

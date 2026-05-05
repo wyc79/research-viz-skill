@@ -78,6 +78,8 @@ choice = st.selectbox("variant", options, format_func=lambda p: p.stem)
 st.image(str(choice), use_column_width=True)
 ```
 
+> **Gotcha:** use `use_column_width=True` on `st.image`, **not** `use_container_width=True`. The latter looks like the right parameter (it's what the rest of streamlit moved to in 1.32) but it was only added to `st.image` in streamlit 1.32 — older versions still in the wild raise `TypeError: ImageMixin.image() got an unexpected keyword argument 'use_container_width'`. `use_column_width` works on every supported version (with a deprecation warning on the very newest). Same applies if you ever switch to `st.image(width="stretch")` — that's even newer.
+
 Make the fallback explicit in `info/context.md` so a future agent knows why the page looks like an image gallery.
 
 ## Persisting widget state across pages

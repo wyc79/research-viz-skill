@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-05-04T23:17:51",
+  "source_files": [
+    "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/data/trial_data_messy.csv"
+  ],
+  "n_rows_after": 117,
+  "n_cols_after": 8,
+  "dtypes": {
+    "trial_id": "int64",
+    "treatment": "object",
+    "patient_age": "float64",
+    "recovery_days": "float64",
+    "blood_pressure": "float64",
+    "visit_date": "object",
+    "notes": "object",
+    "__source__": "object"
+  },
+  "strategies_applied": {
+    "patient_age": "median",
+    "blood_pressure": "median",
+    "notes": "drop_row"
+  },
+  "quality_report": {
+    "n_rows": 200,
+    "n_cols": 8,
+    "columns": {
+      "trial_id": {
+        "pandas_dtype": "int64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 200
+      },
+      "treatment": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 3,
+        "cell_type_counts": {
+          "str": 200
+        }
+      },
+      "patient_age": {
+        "pandas_dtype": "object",
+        "n_missing": 21,
+        "pct_missing": 10.5,
+        "n_unique": 60,
+        "cell_type_counts": {
+          "str": 179
+        }
+      },
+      "recovery_days": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 114
+      },
+      "blood_pressure": {
+        "pandas_dtype": "float64",
+        "n_missing": 29,
+        "pct_missing": 14.5,
+        "n_unique": 143
+      },
+      "visit_date": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 200,
+        "cell_type_counts": {
+          "str": 200
+        },
+        "likely_datetime_column_but_not_parsed": true
+      },
+      "notes": {
+        "pandas_dtype": "object",
+        "n_missing": 83,
+        "pct_missing": 41.5,
+        "n_unique": 3,
+        "cell_type_counts": {
+          "str": 117
+        }
+      },
+      "__source__": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 1,
+        "cell_type_counts": {
+          "str": 200
+        }
+      }
+    }
+  }
+}

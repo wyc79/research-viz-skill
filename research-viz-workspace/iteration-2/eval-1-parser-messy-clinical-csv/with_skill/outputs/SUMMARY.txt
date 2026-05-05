@@ -1,0 +1,1 @@
+Parsed data/trial_data_messy.csv (200 rows) -> visualizations/intermediate_data/parsed_results.csv (117 rows): patient_age + blood_pressure filled with median (text sentinels unknown/?/missing/N/A coerced to NaN first), rows with missing notes dropped, visit_date kept as-is.

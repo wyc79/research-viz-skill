@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-05-05T04:44:27",
+  "data_dir": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/example/data",
+  "single_file_input": true,
+  "has_combined_csv": false,
+  "combined_csv": null,
+  "canonical_csv": "penguins__parsed.csv",
+  "per_file_outputs": [
+    {
+      "source_file": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/example/data/penguins.csv",
+      "source_relative": "penguins.csv",
+      "parsed_path": "penguins__parsed.csv",
+      "n_rows": 333,
+      "n_cols": 8,
+      "dtypes": {
+        "species": "object",
+        "island": "object",
+        "bill_length_mm": "float64",
+        "bill_depth_mm": "float64",
+        "flipper_length_mm": "float64",
+        "body_mass_g": "float64",
+        "sex": "object",
+        "year": "int64"
+      },
+      "strategies_applied": {
+        "bill_length_mm": "median",
+        "bill_depth_mm": "median",
+        "flipper_length_mm": "median",
+        "body_mass_g": "median",
+        "sex": "drop_row"
+      }
+    }
+  ]
+}

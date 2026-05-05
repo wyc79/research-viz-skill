@@ -1,0 +1,7 @@
+{
+  "slug": "bill_length-vs-bill_depth-by-species",
+  "kind": "scatter_species",
+  "title": "Bill length vs. bill depth, by species",
+  "x": "bill_length_mm",
+  "y": "bill_depth_mm"
+}

@@ -14,6 +14,23 @@ If `visualizations/info/style_guide.md` exists, read it first and inherit the pa
 
 The guide is a *guide, not a strict standard* — it drives new pages and any page the user asks you to update. You don't need to retrofit old pages. If the user requests a styling change during this run, record it in `style_guide.md` (project-wide or page-specific, as appropriate) so future sessions inherit it.
 
+## Check the streamlit + altair versions first
+
+Streamlit and altair both have notable API drift across recent versions and an "I'd assume this kwarg exists" mistake here will throw at the user's runtime, not yours. **Before generating any page**, check the installed versions and consult the table in `references/env-management.md`:
+
+```bash
+python3 -c "import streamlit, altair; print('streamlit', streamlit.__version__); print('altair', altair.__version__)"
+```
+
+Common traps to remember (full list in `env-management.md`):
+
+- `st.image(use_container_width=…)` was only added in streamlit **1.32** — older streamlit raises `TypeError: ImageMixin.image() got an unexpected keyword argument 'use_container_width'`. Use `use_column_width=True` instead, which works on every supported version.
+- `st.scatter_chart` and `st.bar_chart(color=…)` need streamlit **1.27**; on older versions, drop down to altair for the same chart.
+- `st.cache_data` needs **1.18**; before that, `@st.cache(allow_output_mutation=True)` is the equivalent.
+- altair selections moved from `alt.selection(type="interval")` + `.add_selection(...)` to `alt.selection_interval()` / `alt.selection_point()` + `.add_params(...)` in **5.0**.
+
+When in doubt, write the legacy form — it works on both. Save the upgrade conversation for the user.
+
 ## Decision rule: streamlit vs. altair vs. fall-back-to-plot_gen
 
 - **Default** is streamlit (`streamlit/index.py` + `streamlit/pages/<topic>.py`) with native streamlit widgets for filtering and `st.altair_chart(...)` for charts that benefit from altair's interactivity (selection, brushing, linked views).

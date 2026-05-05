@@ -1,0 +1,70 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": false,
+      "evidence": "viz dir exists: False"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/interactive_page.sh exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/interactive_page.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "parsed CSV exists with 800 rows",
+      "passed": false,
+      "evidence": "file missing"
+    },
+    {
+      "text": "visualizations/streamlit/index.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit/index.py"
+    },
+    {
+      "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+      "passed": false,
+      "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+    },
+    {
+      "text": "streamlit code references the 'site' and/or 'sensor' columns",
+      "passed": false,
+      "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+    },
+    {
+      "text": "streamlit code plots a time-series of value (line/altair chart)",
+      "passed": false,
+      "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+    },
+    {
+      "text": "context.md mentions the streamlit dashboard",
+      "passed": false,
+      "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md missing"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 12,
+    "total": 12,
+    "pass_rate": 0.0
+  }
+}

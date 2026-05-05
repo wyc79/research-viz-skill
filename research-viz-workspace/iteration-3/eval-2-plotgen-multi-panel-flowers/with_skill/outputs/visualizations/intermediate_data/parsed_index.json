@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-05-05T04:59:17",
+  "data_dir": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/data",
+  "canonical_csv": "flowers__parsed.csv",
+  "per_file_outputs": [
+    {
+      "source_file": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/data/flowers.csv",
+      "source_relative": "flowers.csv",
+      "parsed_path": "flowers__parsed.csv",
+      "n_rows": 150,
+      "n_cols": 5,
+      "dtypes": {
+        "species": "object",
+        "sepal_length": "float64",
+        "sepal_width": "float64",
+        "petal_length": "float64",
+        "petal_width": "float64"
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+Clinical trial CSV cleaning report
+========================================
+Source file        : data/trial_data_messy.csv
+Output (clean) file: visualizations/trial_data_clean.csv
+
+Rows in raw file   : 200
+Rows after dropping missing-notes : 117
+Rows dropped (notes missing/blank): 83
+
+patient_age coercion:
+  -          '?'  ->  NaN  (count = 1)
+  -    'missing'  ->  NaN  (count = 1)
+  -    'unknown'  ->  NaN  (count = 1)
+
+Median fills applied to numeric columns:
+  - patient_age      filled 14 value(s) with median = 52.000
+  - recovery_days    filled 0 value(s) with median = 3.900
+  - blood_pressure   filled 17 value(s) with median = 119.400
+
+Final dtypes:
+  - trial_id        Int64
+  - treatment       object
+  - patient_age     float64
+  - recovery_days   float64
+  - blood_pressure  float64
+  - visit_date      object
+  - notes           object
+
+Final missing-value counts per column:
+  - trial_id        0
+  - treatment       0
+  - patient_age     0
+  - recovery_days   0
+  - blood_pressure  0
+  - visit_date      0
+  - notes           0
+
+Head of cleaned data:
+ trial_id treatment  patient_age  recovery_days  blood_pressure visit_date            notes
+        4    drug_A         68.0            3.8           129.1 2024-01-04        no change
+        6   control         52.0           14.1           146.3 2024-01-06 mild side effect
+        7   control         44.0            0.3            88.8 2024-01-07        responded
+        8    drug_B         41.0            0.2           145.4 2024-01-08        responded
+        9    drug_A         52.0            3.3           123.2 2024-01-09        responded
+       10    drug_B         78.0           11.6           118.5 2024-01-10        no change
+       13    drug_B         52.0            6.3           119.4 2024-01-13 mild side effect
+       14   control         52.0            3.4           136.5 2024-01-14 mild side effect
+       15   control         60.0           24.5           119.4 2024-01-15        no change
+       16   control         38.0           12.9           122.3 2024-01-16        responded

@@ -80,6 +80,11 @@ Be conservative with claims. Surface caveats in the "Notes" section: assumption 
 
 `scipy.stats` covers most defaults. `statsmodels` for ANOVA tables, mixed models, multiple-comparison corrections. `pingouin` is a nicer surface over both (one-call ANOVA + post-hoc + effect size) — prefer it when the env already has it.
 
+**Check versions first** — see the table in `references/env-management.md`. The most common scipy traps:
+
+- `scipy.stats.ttest_ind(..., alternative=...)` is only available in **scipy ≥ 1.6**; before that, only the two-sided p is returned and one-sided p has to be derived manually.
+- `scipy.stats.shapiro` returns a named tuple in **≥ 1.9** with `.statistic` / `.pvalue` attrs; older versions return a plain tuple. Positional unpacking (`stat, p = stats.shapiro(x)`) works on both — prefer it for portability.
+
 If a test you need isn't in those packages (e.g. a permutation test for a niche statistic), fall back to writing the simulation explicitly — it's better than misapplying a built-in.
 
 ## Cross-link with plot_gen

@@ -1,0 +1,42 @@
+{
+  "slug": "body_mass_g-adelie-vs-gentoo-ttest",
+  "title": "body_mass_g by species \u2014 Welch's t-test (Adelie vs Gentoo)",
+  "test": "welch_t",
+  "group_col": "species",
+  "outcome_col": "body_mass_g",
+  "groups": [
+    {
+      "name": "Adelie",
+      "n": 146,
+      "mean": 3706.1643835616437,
+      "sd": 458.6201347129236,
+      "median": 3700.0
+    },
+    {
+      "name": "Gentoo",
+      "n": 119,
+      "mean": 5092.436974789916,
+      "sd": 501.47615382844185,
+      "median": 5050.0
+    }
+  ],
+  "statistic": -23.25392442915641,
+  "df": 242.14429956468885,
+  "p_value": 1.223170419256714e-63,
+  "mean_diff": -1386.2725912282726,
+  "ci_low": -1503.701912042698,
+  "ci_high": -1268.8432704138472,
+  "alpha": 0.05,
+  "effect_size": {
+    "name": "cohens_d",
+    "value": -2.898190700770568,
+    "magnitude": "large"
+  },
+  "assumption_checks": {
+    "shapiro_wilk": {
+      "Adelie": 0.04232240463471649,
+      "Gentoo": 0.26052468451089494
+    },
+    "levene_brown_forsythe": 0.16594007820292708
+  }
+}

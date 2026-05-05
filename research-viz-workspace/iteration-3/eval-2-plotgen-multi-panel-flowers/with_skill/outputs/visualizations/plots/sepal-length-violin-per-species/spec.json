@@ -1,0 +1,14 @@
+{
+  "prompt": "violin plot of sepal_length per species",
+  "slug": "sepal-length-violin-per-species",
+  "palette": {
+    "setosa": "#0173B2",
+    "versicolor": "#DE8F05",
+    "virginica": "#029E73"
+  },
+  "species_order": [
+    "setosa",
+    "versicolor",
+    "virginica"
+  ]
+}

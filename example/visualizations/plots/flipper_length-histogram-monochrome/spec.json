@@ -1,0 +1,7 @@
+{
+  "slug": "flipper_length-histogram-monochrome",
+  "kind": "hist_mono",
+  "title": "Flipper length \u2014 overall distribution",
+  "x": "flipper_length_mm",
+  "xlabel": "Flipper length (mm)"
+}

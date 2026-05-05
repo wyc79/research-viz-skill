@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-05-04T23:29:06",
+  "source_files": [
+    "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/data/flowers.csv"
+  ],
+  "n_rows_after": 150,
+  "n_cols_after": 6,
+  "dtypes": {
+    "species": "object",
+    "sepal_length": "float64",
+    "sepal_width": "float64",
+    "petal_length": "float64",
+    "petal_width": "float64",
+    "__source__": "object"
+  },
+  "strategies_applied": {},
+  "quality_report": {
+    "n_rows": 150,
+    "n_cols": 6,
+    "columns": {
+      "species": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 3,
+        "cell_type_counts": {
+          "str": 150
+        }
+      },
+      "sepal_length": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 119
+      },
+      "sepal_width": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 99
+      },
+      "petal_length": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 117
+      },
+      "petal_width": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 101
+      },
+      "__source__": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 1,
+        "cell_type_counts": {
+          "str": 150
+        }
+      }
+    }
+  }
+}

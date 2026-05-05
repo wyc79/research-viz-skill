@@ -1,0 +1,619 @@
+{
+  "metadata": {
+    "skill_name": "research-viz",
+    "skill_path": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz",
+    "executor_model": "claude-opus-4-7",
+    "analyzer_model": "claude-opus-4-7",
+    "timestamp": "2026-05-04T23:33:14Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "parser-messy-clinical-csv",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0667,
+        "passed": 1,
+        "failed": 14,
+        "total": 15,
+        "time_seconds": 55.4,
+        "tokens": 24594,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "intermediate_data/parsed_results.csv exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/intermediate_data/parsed_results.csv"
+        },
+        {
+          "text": "intermediate_data/parsed_results.meta.json exists and lists strategies",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/intermediate_data/parsed_results.meta.json"
+        },
+        {
+          "text": "parsed_results.csv has 200 rows or fewer",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "patient_age numeric",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "blood_pressure no NaN",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "context.md mentions parser/parsing/cleaning",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "parser-messy-clinical-csv",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 15,
+        "failed": 0,
+        "total": 15,
+        "time_seconds": 133.8,
+        "tokens": 39498,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "intermediate_data/parsed_results.csv exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/parsed_results.csv"
+        },
+        {
+          "text": "intermediate_data/parsed_results.meta.json exists and lists strategies",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/parsed_results.meta.json"
+        },
+        {
+          "text": "parsed_results.csv has 200 rows or fewer (drop_row may shrink)",
+          "passed": true,
+          "evidence": "rows=117, cols=8"
+        },
+        {
+          "text": "patient_age column in parsed_results.csv is numeric",
+          "passed": true,
+          "evidence": "dtype=float64"
+        },
+        {
+          "text": "blood_pressure column has no NaN (median was applied)",
+          "passed": true,
+          "evidence": "NaN count=0"
+        },
+        {
+          "text": "context.md mentions parser/parsing/cleaning",
+          "passed": true,
+          "evidence": "matched /parser/i in context.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "plotgen-multi-panel-flowers",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0714,
+        "passed": 1,
+        "failed": 13,
+        "total": 14,
+        "time_seconds": 84.7,
+        "tokens": 22476,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "parsed_results.csv exists with 150 rows",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+          "passed": false,
+          "evidence": "no plots dir"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+          "passed": false,
+          "evidence": "no plots dir"
+        },
+        {
+          "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+          "passed": false,
+          "evidence": "at least one is missing CSV"
+        },
+        {
+          "text": "context.md mentions both plots",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "plotgen-multi-panel-flowers",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 14,
+        "failed": 0,
+        "total": 14,
+        "time_seconds": 138.8,
+        "tokens": 49627,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "parsed_results.csv has 150 rows",
+          "passed": true,
+          "evidence": "rows=150"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+          "passed": true,
+          "evidence": "png in plots/scatter-of-petal-length-vs-petal-width-colored-by-species"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+          "passed": true,
+          "evidence": "png in plots/violin-of-sepal-length-per-species"
+        },
+        {
+          "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+          "passed": true,
+          "evidence": "all png-bearing subdirs have a CSV"
+        },
+        {
+          "text": "context.md mentions both plots",
+          "passed": true,
+          "evidence": "matched /scatter/i in context.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "interactive-streamlit-sensor-log",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 15,
+        "total": 15,
+        "time_seconds": 109.1,
+        "tokens": 24588,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": false,
+          "evidence": "viz dir exists: False"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "parsed_results.csv exists with 800 rows",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "visualizations/streamlit/index.py exists",
+          "passed": false,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit/index.py"
+        },
+        {
+          "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "streamlit code references the 'site' and/or 'sensor' columns",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "streamlit code plots a time-series of value (line/altair chart)",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "context.md mentions the streamlit dashboard",
+          "passed": false,
+          "evidence": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "interactive-streamlit-sensor-log",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 15,
+        "failed": 0,
+        "total": 15,
+        "time_seconds": 253.4,
+        "tokens": 64232,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plotgen.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/plotgen.py"
+        },
+        {
+          "text": "visualizations/scripts/fcns/utils.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/fcns/utils.py"
+        },
+        {
+          "text": "visualizations/parseinput.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/parseinput.sh"
+        },
+        {
+          "text": "visualizations/generateplot.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/generateplot.sh"
+        },
+        {
+          "text": "visualizations/interactivepage.sh exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/interactivepage.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/howtouse.md exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/howtouse.md"
+        },
+        {
+          "text": "parsed_results.csv has 800 rows",
+          "passed": true,
+          "evidence": "rows=800"
+        },
+        {
+          "text": "visualizations/streamlit/index.py exists",
+          "passed": true,
+          "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-1/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/streamlit/index.py"
+        },
+        {
+          "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+          "passed": true,
+          "evidence": "matched /selectbox|multiselect|radio|checkbox/i in streamlit/pages/1_sensor_time_series.py"
+        },
+        {
+          "text": "streamlit code references the 'site' and/or 'sensor' columns",
+          "passed": true,
+          "evidence": "matched /(site|sensor)/i in streamlit/pages/1_sensor_time_series.py"
+        },
+        {
+          "text": "streamlit code plots a time-series of value (line/altair chart)",
+          "passed": true,
+          "evidence": "matched /line_chart|altair_chart|plotly_chart|sns\\.lineplot|st\\.line/i in streamlit/pages/1_sensor_time_series.py"
+        },
+        {
+          "text": "context.md mentions the streamlit dashboard",
+          "passed": true,
+          "evidence": "matched /streamlit/i in context.md"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.046,
+        "stddev": 0.0326,
+        "min": 0.0,
+        "max": 0.0714
+      },
+      "time_seconds": {
+        "mean": 83.0667,
+        "stddev": 21.9533,
+        "min": 55.4,
+        "max": 109.1
+      },
+      "tokens": {
+        "mean": 23886,
+        "stddev": 997.0236,
+        "min": 22476,
+        "max": 24594
+      }
+    },
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 175.3333,
+        "stddev": 55.2392,
+        "min": 133.8,
+        "max": 253.4
+      },
+      "tokens": {
+        "mean": 51119,
+        "stddev": 10152.5772,
+        "min": 39498,
+        "max": 64232
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.95",
+      "time_seconds": "+92.3",
+      "tokens": "+27233"
+    }
+  },
+  "notes": []
+}

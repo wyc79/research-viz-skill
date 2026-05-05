@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-05-04T23:29:46",
+  "source_files": [
+    "/Users/yuanchenwang/Documents/Claude/Projects/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/data/sensor_log.csv"
+  ],
+  "n_rows_after": 800,
+  "n_cols_after": 6,
+  "dtypes": {
+    "ts": "object",
+    "site": "object",
+    "sensor": "object",
+    "value": "float64",
+    "ok": "bool",
+    "__source__": "object"
+  },
+  "strategies_applied": {},
+  "quality_report": {
+    "n_rows": 800,
+    "n_cols": 6,
+    "columns": {
+      "ts": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 800,
+        "cell_type_counts": {
+          "str": 800
+        }
+      },
+      "site": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 4,
+        "cell_type_counts": {
+          "str": 800
+        }
+      },
+      "sensor": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 3,
+        "cell_type_counts": {
+          "str": 800
+        }
+      },
+      "value": {
+        "pandas_dtype": "float64",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 719
+      },
+      "ok": {
+        "pandas_dtype": "bool",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 2
+      },
+      "__source__": {
+        "pandas_dtype": "object",
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "n_unique": 1,
+        "cell_type_counts": {
+          "str": 800
+        }
+      }
+    }
+  }
+}

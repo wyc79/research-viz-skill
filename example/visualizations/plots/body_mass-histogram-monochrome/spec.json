@@ -1,0 +1,7 @@
+{
+  "slug": "body_mass-histogram-monochrome",
+  "kind": "hist_mono",
+  "title": "Body mass \u2014 overall distribution",
+  "x": "body_mass_g",
+  "xlabel": "Body mass (g)"
+}

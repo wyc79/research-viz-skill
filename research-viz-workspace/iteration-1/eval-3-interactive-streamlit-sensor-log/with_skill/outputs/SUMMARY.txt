@@ -1,0 +1,86 @@
+research-viz workspace — sensor_log dashboard
+==============================================
+
+Task: build a streamlit dashboard for `data/sensor_log.csv` that filters by
+site and sensor and shows the time series of `value`. Files only — do not run
+streamlit.
+
+What was done
+-------------
+1. Scaffolded a `visualizations/` workspace next to `data/` using the
+   research-viz skill's scaffold.py. Standard layout:
+
+       outputs/
+       |-- data/
+       |   `-- sensor_log.csv               (input, already provided)
+       |-- SUMMARY.txt                      (this file)
+       `-- visualizations/
+           |-- README.md
+           |-- parseinput.sh                (chmod +x, wired to absolute paths)
+           |-- generateplot.sh
+           |-- interactivepage.sh           (runs `streamlit run streamlit/index.py`)
+           |-- info/
+           |   |-- context.md               (handoff doc, updated)
+           |   `-- howtouse.md
+           |-- intermediate_data/
+           |   |-- parsed_results.csv       (800 rows, 6 cols)
+           |   `-- parsed_results.meta.json
+           |-- plots/                       (empty — no static plots requested)
+           |-- scripts/
+           |   |-- parser.py
+           |   |-- plotgen.py
+           |   `-- fcns/{__init__.py, utils.py}
+           `-- streamlit/
+               |-- index.py                 (landing page from scaffold)
+               `-- pages/
+                   `-- 1_sensor_time_series.py   (the page built for this task)
+
+2. Ran the parser non-interactively against `data/sensor_log.csv`. Output:
+   `visualizations/intermediate_data/parsed_results.csv` (800 rows;
+   columns: ts, site, sensor, value, ok, __source__). Quality report shows
+   zero missing values across all columns, so no missing-data strategy was
+   applied. Meta JSON sits alongside.
+
+   Dataset shape:
+     - ts:     2025-01-01 00:00 -> 2025-04-10 21:00 at 3-hour cadence
+     - site:   east, north, south, west
+     - sensor: humidity, pressure, temperature
+     - value:  float64
+     - ok:     bool (762 True / 38 False)
+
+3. Built `visualizations/streamlit/pages/1_sensor_time_series.py`. Features:
+     - Sidebar multi-select for `site` and `sensor` (defaults to all).
+     - Optional date-range picker and an "only ok=True" checkbox.
+     - Top-line metrics (filtered row count, mean value, etc.).
+     - Altair line chart of `value` vs `ts`, one line per (site, sensor),
+       with point markers and tooltips. Zoomable / pannable.
+     - Per-series summary table (count, mean, std, min, max).
+     - "Download filtered rows as CSV" button.
+     - Data load wrapped in `@st.cache_data` keyed by file path + mtime;
+       `ts` is parsed to datetime on load.
+
+4. Updated `visualizations/info/context.md` with the dataset notes, the env
+   decision (use ambient interpreter — pandas/streamlit/altair etc. are
+   pre-installed, no venv created), and an activity-log entry per subskill.
+
+How to run it
+-------------
+From this `outputs/` directory:
+
+    bash visualizations/interactivepage.sh
+
+That launches `streamlit run visualizations/streamlit/index.py`. The new page
+appears in the sidebar as "1 sensor time series". The landing page (index.py)
+gives a schema overview; the new page is where the filtering + time series
+live.
+
+If anything goes wrong with the data, rerun:
+
+    bash visualizations/parseinput.sh --no-interactive
+
+Constraints honored
+-------------------
+- All output is inside the working directory.
+- streamlit / interactivepage.sh was NOT launched by the agent.
+- No clarifying questions were asked.
+- pandas/streamlit/altair are assumed already installed in the user's env.

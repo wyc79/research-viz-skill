@@ -1,0 +1,68 @@
+research-viz — sensor_log streamlit dashboard
+==============================================
+
+Task
+----
+Build a streamlit dashboard for `data/sensor_log.csv` that lets the user
+filter by site and sensor and shows the time series of `value`. Produce all
+files; do NOT launch streamlit.
+
+What was done
+-------------
+1. Scaffolded the `visualizations/` workspace with the bundled scaffold
+   script (`research-viz/scripts/scaffold.py`). This created the standard
+   tree (scripts/, intermediate_data/, plots/, streamlit/, info/, plus the
+   three `.sh` wrappers).
+
+2. Ran the parser non-interactively against `data/sensor_log.csv`:
+       bash visualizations/parse_input.sh --no-interactive
+   The dataset has 800 rows and no missing values, so no imputation was
+   applied. Outputs:
+       visualizations/intermediate_data/parsed_results.csv
+       visualizations/intermediate_data/parsed_results.meta.json
+
+3. Built the dashboard page at
+       visualizations/streamlit/pages/1_sensor_timeseries.py
+   It:
+     - reads `parsed_results.csv` via a `@st.cache_data` loader keyed by
+       (path, mtime), and parses `ts` to datetime in the loader;
+     - shows sidebar filters: multi-select `site`, multi-select `sensor`,
+       a time-range slider, and an "only ok = True" checkbox;
+     - shows headline metrics (rows shown, # sites, # sensors, mean value);
+     - renders the time series of `value` as an interactive altair line
+       chart (one line per (site, sensor); color = sensor, dash = site;
+       hover tooltips; pan + zoom enabled);
+     - includes a faceted small-multiples view (one panel per site) in an
+       expander;
+     - exposes the filtered rows in a dataframe with a "Download CSV"
+       button.
+
+4. Updated `visualizations/info/context.md` with dataset notes (column
+   meanings, sites/sensors, no missing values) and an activity log entry
+   for the parse + dashboard work.
+
+How to run (user does this — NOT done in this session)
+------------------------------------------------------
+    cd "<this outputs dir>"
+    bash visualizations/interactive_page.sh
+
+That executes `streamlit run visualizations/streamlit/index.py`. The
+landing page (`index.py`) is the bundled scaffold view (schema + sample);
+the sensor-log dashboard appears in the sidebar as "1 sensor timeseries".
+
+Key files
+---------
+visualizations/streamlit/index.py
+visualizations/streamlit/pages/1_sensor_timeseries.py
+visualizations/intermediate_data/parsed_results.csv
+visualizations/intermediate_data/parsed_results.meta.json
+visualizations/interactive_page.sh
+visualizations/parse_input.sh
+visualizations/info/context.md
+visualizations/info/how_to_use.md
+
+Constraints honoured
+--------------------
+- All output is inside the working directory.
+- streamlit / interactive_page.sh were NOT launched.
+- No clarifying questions asked.

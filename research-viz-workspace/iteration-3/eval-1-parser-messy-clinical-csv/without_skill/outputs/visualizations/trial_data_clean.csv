@@ -1,0 +1,118 @@
+trial_id,treatment,patient_age,recovery_days,blood_pressure,visit_date,notes
+4,drug_A,68.0,3.8,129.1,2024-01-04,no change
+6,control,52.0,14.1,146.3,2024-01-06,mild side effect
+7,control,44.0,0.3,88.8,2024-01-07,responded
+8,drug_B,41.0,0.2,145.4,2024-01-08,responded
+9,drug_A,52.0,3.3,123.2,2024-01-09,responded
+10,drug_B,78.0,11.6,118.5,2024-01-10,no change
+13,drug_B,52.0,6.3,119.4,2024-01-13,mild side effect
+14,control,52.0,3.4,136.5,2024-01-14,mild side effect
+15,control,60.0,24.5,119.4,2024-01-15,no change
+16,control,38.0,12.9,122.3,2024-01-16,responded
+17,control,31.0,12.8,114.5,2024-01-17,no change
+25,drug_A,77.0,39.9,120.3,2024-01-25,no change
+27,control,35.0,10.3,111.9,2024-01-27,mild side effect
+28,drug_A,72.0,20.3,108.3,2024-01-28,responded
+30,control,54.0,2.0,105.3,2024-01-30,responded
+31,drug_A,31.0,4.2,126.1,2024-01-31,no change
+32,control,44.0,1.0,94.5,2024-02-01,responded
+33,control,71.0,21.6,135.4,2024-02-02,no change
+34,drug_B,78.0,6.5,127.1,2024-02-03,mild side effect
+35,drug_B,40.0,1.8,123.8,2024-02-04,no change
+36,drug_B,55.0,7.8,134.7,2024-02-05,no change
+40,drug_A,76.0,7.8,100.8,2024-02-09,mild side effect
+41,control,58.0,5.1,110.6,2024-02-10,mild side effect
+46,drug_A,58.0,5.8,108.7,2024-02-15,mild side effect
+47,control,33.0,14.6,119.4,2024-02-16,responded
+48,drug_A,50.0,3.6,98.9,2024-02-17,mild side effect
+49,drug_A,77.0,1.0,106.2,2024-02-18,mild side effect
+50,control,24.0,0.2,99.7,2024-02-19,no change
+51,drug_B,54.0,9.8,105.4,2024-02-20,no change
+52,drug_B,42.0,6.8,135.8,2024-02-21,no change
+53,drug_B,48.0,8.5,105.8,2024-02-22,no change
+56,drug_B,37.0,0.1,122.8,2024-02-25,responded
+57,control,66.0,3.0,119.4,2024-02-26,mild side effect
+59,control,28.0,3.5,111.4,2024-02-28,responded
+62,control,63.0,3.0,118.6,2024-03-02,mild side effect
+64,control,57.0,10.7,109.5,2024-03-04,no change
+66,drug_A,65.0,6.8,146.6,2024-03-06,mild side effect
+67,control,32.0,13.9,110.6,2024-03-07,mild side effect
+68,drug_B,59.0,20.9,119.4,2024-03-08,mild side effect
+69,control,61.0,1.1,130.6,2024-03-09,responded
+75,drug_B,24.0,4.7,109.1,2024-03-15,mild side effect
+77,drug_B,56.0,7.0,118.9,2024-03-17,mild side effect
+78,control,57.0,1.9,129.3,2024-03-18,responded
+80,control,27.0,1.0,100.0,2024-03-20,mild side effect
+81,drug_B,67.0,1.0,125.7,2024-03-21,mild side effect
+82,drug_A,64.0,1.2,129.2,2024-03-22,responded
+83,control,20.0,1.0,128.4,2024-03-23,no change
+85,control,71.0,1.4,132.5,2024-03-25,no change
+87,drug_B,26.0,15.9,119.4,2024-03-27,mild side effect
+88,drug_A,44.0,4.5,95.1,2024-03-28,responded
+89,drug_B,64.0,7.7,126.4,2024-03-29,responded
+91,control,52.0,1.5,124.1,2024-03-31,no change
+93,drug_B,79.0,1.3,103.8,2024-04-02,mild side effect
+95,drug_B,38.0,1.4,119.4,2024-04-04,responded
+96,drug_A,63.0,0.7,130.2,2024-04-05,responded
+99,control,46.0,1.6,134.1,2024-04-08,mild side effect
+100,control,29.0,3.2,112.3,2024-04-09,no change
+102,drug_A,38.0,8.2,119.4,2024-04-11,mild side effect
+107,drug_A,69.0,14.5,138.8,2024-04-16,no change
+108,drug_B,47.0,17.8,106.6,2024-04-17,mild side effect
+110,control,39.0,2.3,113.4,2024-04-19,responded
+111,control,47.0,11.5,119.4,2024-04-20,responded
+115,drug_A,20.0,3.2,124.0,2024-04-24,responded
+116,drug_B,22.0,4.6,133.3,2024-04-25,responded
+120,drug_A,79.0,9.6,141.1,2024-04-29,no change
+121,drug_B,68.0,0.3,154.5,2024-04-30,mild side effect
+123,control,75.0,8.7,113.3,2024-05-02,responded
+125,control,57.0,5.0,119.4,2024-05-04,no change
+126,drug_A,72.0,5.3,112.2,2024-05-05,no change
+127,drug_B,25.0,0.8,113.7,2024-05-06,mild side effect
+129,control,63.0,5.3,99.8,2024-05-08,responded
+130,drug_A,64.0,1.9,106.2,2024-05-09,responded
+132,control,64.0,3.3,108.5,2024-05-11,responded
+133,control,52.0,0.1,119.4,2024-05-12,mild side effect
+134,control,40.0,2.7,123.5,2024-05-13,mild side effect
+135,drug_B,52.0,1.7,143.3,2024-05-14,responded
+136,control,52.0,2.8,105.0,2024-05-15,responded
+138,drug_B,30.0,15.5,116.8,2024-05-17,responded
+141,drug_B,55.0,10.9,103.2,2024-05-20,responded
+142,control,54.0,4.8,125.7,2024-05-21,no change
+143,drug_A,38.0,0.6,119.4,2024-05-22,no change
+145,control,76.0,6.2,124.3,2024-05-24,responded
+146,control,37.0,9.6,156.8,2024-05-25,no change
+147,drug_A,66.0,4.0,110.4,2024-05-26,responded
+148,drug_A,52.0,1.0,112.0,2024-05-27,responded
+149,control,68.0,2.3,119.4,2024-05-28,responded
+151,drug_B,34.0,7.3,110.4,2024-05-30,responded
+154,drug_A,72.0,30.1,111.4,2024-06-02,no change
+155,drug_B,52.0,6.5,107.5,2024-06-03,no change
+156,control,73.0,1.9,127.1,2024-06-04,no change
+157,drug_A,52.0,0.8,111.7,2024-06-05,no change
+158,drug_B,35.0,1.2,129.5,2024-06-06,no change
+159,control,42.0,2.0,123.0,2024-06-07,no change
+160,drug_B,76.0,1.2,97.3,2024-06-08,no change
+162,drug_A,31.0,2.3,146.9,2024-06-10,responded
+163,drug_A,29.0,1.3,110.8,2024-06-11,mild side effect
+165,control,35.0,0.6,124.3,2024-06-13,mild side effect
+166,drug_B,27.0,5.2,125.0,2024-06-14,mild side effect
+167,control,57.0,3.7,119.4,2024-06-15,responded
+168,control,31.0,28.3,150.2,2024-06-16,responded
+169,control,43.0,0.8,117.3,2024-06-17,responded
+170,drug_A,52.0,3.6,108.0,2024-06-18,no change
+172,control,52.0,14.0,109.0,2024-06-20,no change
+175,drug_A,52.0,1.3,119.4,2024-06-23,mild side effect
+176,control,45.0,7.7,119.4,2024-06-24,mild side effect
+179,drug_B,79.0,5.9,157.9,2024-06-27,no change
+180,control,69.0,2.3,112.0,2024-06-28,no change
+181,control,47.0,10.3,119.4,2024-06-29,mild side effect
+182,control,47.0,1.4,135.7,2024-06-30,responded
+184,drug_B,60.0,3.9,147.7,2024-07-02,no change
+185,control,55.0,5.0,128.8,2024-07-03,mild side effect
+186,drug_A,46.0,1.9,114.6,2024-07-04,no change
+190,control,52.0,6.1,127.6,2024-07-08,responded
+192,drug_B,39.0,4.6,119.4,2024-07-10,mild side effect
+193,drug_B,32.0,5.3,140.7,2024-07-11,no change
+194,drug_A,47.0,0.4,119.4,2024-07-12,mild side effect
+199,drug_B,54.0,2.7,125.5,2024-07-17,mild side effect

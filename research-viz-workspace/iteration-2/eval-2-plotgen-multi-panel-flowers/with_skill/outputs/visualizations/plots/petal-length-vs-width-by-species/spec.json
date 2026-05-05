@@ -1,0 +1,5 @@
+{
+  "prompt": "scatter of petal_length vs petal_width colored by species",
+  "data_source": "/sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/intermediate_data/parsed_results.csv",
+  "slug": "petal-length-vs-width-by-species"
+}

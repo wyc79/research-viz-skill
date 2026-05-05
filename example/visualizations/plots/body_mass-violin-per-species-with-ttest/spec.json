@@ -1,0 +1,7 @@
+{
+  "slug": "body_mass-violin-per-species-with-ttest",
+  "kind": "violin_species_ttest",
+  "title": "Body mass per species (Welch's t-test: Adelie vs Gentoo)",
+  "y": "body_mass_g",
+  "ttest_slug": "body_mass_g-adelie-vs-gentoo-ttest"
+}

@@ -1,0 +1,5 @@
+{
+  "slug": "correlation-heatmap-monochrome",
+  "kind": "corr_heatmap_mono",
+  "title": "Correlation of numeric measurements"
+}

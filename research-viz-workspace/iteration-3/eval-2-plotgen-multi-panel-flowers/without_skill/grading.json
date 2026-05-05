@@ -1,0 +1,75 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/scripts/plot_gen.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/plot_gen.py"
+    },
+    {
+      "text": "visualizations/scripts/helpers/utils.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/helpers/utils.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/generate_plot.sh exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/generate_plot.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "parsed CSV exists with 150 rows",
+      "passed": false,
+      "evidence": "file missing"
+    },
+    {
+      "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+      "passed": false,
+      "evidence": "no plots dir"
+    },
+    {
+      "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+      "passed": false,
+      "evidence": "no plots dir"
+    },
+    {
+      "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+      "passed": false,
+      "evidence": "at least one is missing CSV"
+    },
+    {
+      "text": "context.md mentions both plots",
+      "passed": false,
+      "evidence": "iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md missing"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 12,
+    "total": 13,
+    "pass_rate": 0.0769
+  }
+}

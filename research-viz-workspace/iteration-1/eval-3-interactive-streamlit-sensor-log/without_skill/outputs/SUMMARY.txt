@@ -1,0 +1,53 @@
+Streamlit Sensor Log Dashboard - Build Summary
+================================================
+
+Working directory:
+  outputs/
+
+Files produced:
+  app.py                Streamlit dashboard application.
+  interactivepage.sh    Launcher script (chmod +x). Run from this folder
+                        with `./interactivepage.sh`. Honors $PORT (default 8501).
+  data/sensor_log.csv   Source data (already in place; not modified).
+  SUMMARY.txt           This file.
+
+Data parsed (data/sensor_log.csv):
+  Rows:    800
+  Columns: ts, site, sensor, value, ok
+  ts:      parsed as datetime, range 2025-01-01 00:00:00 -> 2025-04-10 21:00:00
+  sites:   east, north, south, west
+  sensors: humidity, pressure, temperature
+  ok:      coerced to bool (handles "True"/"False" strings if present)
+  Loader is wrapped with @st.cache_data for fast reruns.
+
+Dashboard features (app.py):
+  Sidebar filters
+    - Site multiselect (default: all 4 sites).
+    - Sensor multiselect (default: all 3 sensor types).
+    - Date range picker, bounded to the actual min/max timestamps.
+    - "Only ok=True" checkbox to drop bad readings.
+  Top metrics row
+    - Filtered row count, # sites selected, # sensors selected, mean value.
+  Time series of value
+    - Altair line + circle chart, one colored series per site/sensor combo,
+      tooltip with ts/site/sensor/value/ok, pan+zoom enabled (.interactive()).
+  Per-sensor facet (collapsible)
+    - One row per sensor type, colored by site, independent y-scales.
+  Summary by site/sensor
+    - count / mean / min / max / std table.
+  Raw filtered data (collapsible)
+    - Full filtered DataFrame plus a "Download filtered CSV" button.
+  Empty-filter handling
+    - Shows a warning instead of an empty/broken chart when no rows match.
+
+How to run (NOT run by this task per instructions):
+  cd outputs
+  ./interactivepage.sh
+  # then open http://localhost:8501
+  # override port: PORT=8600 ./interactivepage.sh
+
+Verification performed:
+  - app.py parses cleanly (ast.parse).
+  - CSV loads via pandas with the same logic the app uses; site/sensor
+    categories and timestamp range confirmed as listed above.
+  - Streamlit was NOT launched, per task constraints.

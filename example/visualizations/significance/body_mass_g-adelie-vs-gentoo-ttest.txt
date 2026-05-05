@@ -1,0 +1,24 @@
+# body_mass_g by species — Welch's t-test (Adelie vs Gentoo)
+# data: visualizations/intermediate_data/penguins__parsed.csv
+# generated: 2026-05-05T04:40:09
+
+Groups
+  Adelie: n=146, mean=3706.2, sd=458.6, median=3700.0
+  Gentoo: n=119, mean=5092.4, sd=501.5, median=5050.0
+
+Test
+  H0: mean(Adelie) == mean(Gentoo)
+  Welch's t-test (unequal variances)
+  t = -23.254, df = 242.1, p = 1.22e-63
+  95% CI for difference (Adelie − Gentoo): [-1503.7, -1268.8] g
+
+Effect size
+  Cohen's d = -2.90 (large)
+
+Notes
+  - Shapiro-Wilk on each group: Adelie p=0.0423, Gentoo p=0.261.
+    Normality fails at α=0.05;
+    if you'd rather not assume normality, ask for `mannwhitney body_mass_g species`.
+  - Levene's test for equal variances (Brown–Forsythe): p=0.166 →
+    equal variances; Welch's is robust to either.
+  - No multiple-comparison correction applied — this is a single planned contrast.

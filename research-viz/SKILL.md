@@ -206,17 +206,21 @@ Confirm before scaffolding (raise these questions with the user — concise, pre
 Decide the env *before* writing or running any Python.
 
 1. Detect the active interpreter and version: `which python3 && python3 --version`. If a venv is already active in the current shell (`$VIRTUAL_ENV`) or there's a project-local `.venv/`, prefer that.
-2. Check whether the packages the chosen subskill needs are importable. The minimum sets:
+2. Check whether the packages the chosen subskill needs are importable, **and what version is installed**. Don't just check presence — APIs in our stack (streamlit kwargs, seaborn `ci=` vs `errorbar=`, altair `add_selection` vs `add_params`, statannotations test signature, etc.) drift across releases, and an `ImportError` at write-time is much cheaper than a `TypeError` at the user's runtime. The minimum sets:
    - **parser**: `pandas`, `numpy`, `openpyxl` (for xlsx)
-   - **plot_gen**: `pandas`, `numpy`, `matplotlib`, `seaborn`
+   - **plot_gen**: `pandas`, `numpy`, `matplotlib`, `seaborn` (+ `statannotations` if a recipe overlays significance brackets)
    - **interactive**: `pandas`, `streamlit`, plus `altair` if altair charts are requested
+   - **significance_test**: `pandas`, `numpy`, `scipy` (+ `pingouin` if used)
+
+   See **`references/env-management.md`** for a one-shot version-detection snippet and a cheat sheet of **known version-sensitive APIs** in this stack — read it before reaching for any "this kwarg should exist" assumption. When the installed version is older than the cutoff for an API you wanted to use, write the legacy form rather than crashing on the user's machine.
 3. If anything is missing, **ask the user how to install** (do not install silently). Offer four choices:
    - install into the current env (`pip install ...`)
    - create a fresh venv at `visualizations/.venv` and install there (skill will then update the `.sh` wrappers to source it)
    - create a fresh conda env (`conda create -n <name> python=3.x ...`)
    - skip — user will install themselves; pause until they confirm
+4. **Write the versions you saw into `info/context.md`'s "Python env" line** (one short row: `streamlit 1.28, altair 5.1, statannotations 0.6, …`) so a future agent knows the surface they're targeting and can pick legacy vs. modern API calls without re-detecting.
 
-See `references/env-management.md` for the exact commands and the snippet that needs to go into `parse_input.sh` / `generate_plot.sh` / `interactive_page.sh` when a venv-based install is chosen.
+See `references/env-management.md` for the exact commands, the version-sensitive-API table, and the snippet that needs to go into `parse_input.sh` / `generate_plot.sh` / `interactive_page.sh` when a venv-based install is chosen.
 
 ---
 

@@ -1,0 +1,70 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/interactive_page.sh exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/interactive_page.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "parsed CSV has 800 rows",
+      "passed": true,
+      "evidence": "rows=800 (file: sensor_log__parsed.csv)"
+    },
+    {
+      "text": "visualizations/streamlit/index.py exists",
+      "passed": true,
+      "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/streamlit/index.py"
+    },
+    {
+      "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+      "passed": true,
+      "evidence": "matched /selectbox|multiselect|radio|checkbox/i in streamlit/pages/1_time_series.py"
+    },
+    {
+      "text": "streamlit code references the 'site' and/or 'sensor' columns",
+      "passed": true,
+      "evidence": "matched /(site|sensor)/i in streamlit/index.py"
+    },
+    {
+      "text": "streamlit code plots a time-series of value (line/altair chart)",
+      "passed": true,
+      "evidence": "matched /line_chart|altair_chart|plotly_chart|sns\\.lineplot|st\\.line/i in streamlit/pages/1_time_series.py"
+    },
+    {
+      "text": "context.md mentions the streamlit dashboard",
+      "passed": true,
+      "evidence": "matched /streamlit/i in context.md"
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "total": 12,
+    "pass_rate": 1.0
+  }
+}

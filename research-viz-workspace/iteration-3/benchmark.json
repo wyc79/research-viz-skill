@@ -1,0 +1,539 @@
+{
+  "metadata": {
+    "skill_name": "research-viz",
+    "skill_path": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz",
+    "executor_model": "claude-opus-4-7",
+    "analyzer_model": "claude-opus-4-7",
+    "timestamp": "2026-05-05T05:07:51Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "parser-messy-clinical-csv",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0909,
+        "passed": 1,
+        "failed": 10,
+        "total": 11,
+        "time_seconds": 79.7,
+        "tokens": 23344,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "intermediate_data parsed CSV exists (new <dataset>__parsed.csv or legacy parsed_results.csv)",
+          "passed": false,
+          "evidence": "no parsed CSV under intermediate_data/"
+        },
+        {
+          "text": "strategies are recorded (meta.json or parsed_index.json)",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/intermediate_data/parsed_index.json"
+        },
+        {
+          "text": "parsed CSV has 200 rows or fewer",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "patient_age numeric",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "blood_pressure no NaN",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "context.md mentions parser/parsing/cleaning",
+          "passed": false,
+          "evidence": "iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "parser-messy-clinical-csv",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
+        "total": 11,
+        "time_seconds": 208.6,
+        "tokens": 73213,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "intermediate_data parsed CSV exists (new <dataset>__parsed.csv or legacy parsed_results.csv)",
+          "passed": true,
+          "evidence": "found: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/trial_data_messy__parsed.csv"
+        },
+        {
+          "text": "strategies are recorded (meta.json or parsed_index.json)",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/trial_data_messy__parsed.meta.json"
+        },
+        {
+          "text": "parsed CSV has 200 rows or fewer (drop_row may shrink)",
+          "passed": true,
+          "evidence": "rows=117, cols=7"
+        },
+        {
+          "text": "patient_age column is numeric",
+          "passed": true,
+          "evidence": "dtype=float64"
+        },
+        {
+          "text": "blood_pressure has no NaN (median was applied)",
+          "passed": true,
+          "evidence": "NaN count=0"
+        },
+        {
+          "text": "context.md mentions parser/parsing/cleaning",
+          "passed": true,
+          "evidence": "matched /parser/i in context.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "plotgen-multi-panel-flowers",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0769,
+        "passed": 1,
+        "failed": 12,
+        "total": 13,
+        "time_seconds": 483.0,
+        "tokens": 20532,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plot_gen.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/plot_gen.py"
+        },
+        {
+          "text": "visualizations/scripts/helpers/utils.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/scripts/helpers/utils.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/generate_plot.sh exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/generate_plot.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "parsed CSV exists with 150 rows",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+          "passed": false,
+          "evidence": "no plots dir"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+          "passed": false,
+          "evidence": "no plots dir"
+        },
+        {
+          "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+          "passed": false,
+          "evidence": "at least one is missing CSV"
+        },
+        {
+          "text": "context.md mentions both plots",
+          "passed": false,
+          "evidence": "iteration-3/eval-2-plotgen-multi-panel-flowers/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "plotgen-multi-panel-flowers",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 13,
+        "failed": 0,
+        "total": 13,
+        "time_seconds": 272.9,
+        "tokens": 84584,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/scripts/plot_gen.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/plot_gen.py"
+        },
+        {
+          "text": "visualizations/scripts/helpers/utils.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/scripts/helpers/utils.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/generate_plot.sh exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/generate_plot.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-2-plotgen-multi-panel-flowers/with_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "parsed CSV has 150 rows",
+          "passed": true,
+          "evidence": "rows=150 (file: flowers__parsed.csv)"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a scatter PNG (petal length vs width)",
+          "passed": true,
+          "evidence": "png in plots/petal-length-vs-width-by-species"
+        },
+        {
+          "text": "a plot subfolder under visualizations/plots/ contains a violin PNG (sepal length per species)",
+          "passed": true,
+          "evidence": "png in plots/sepal-length-violin-per-species"
+        },
+        {
+          "text": "each plot subfolder contains a tidy data.csv next to figure.png",
+          "passed": true,
+          "evidence": "all png-bearing subdirs have a CSV"
+        },
+        {
+          "text": "context.md mentions both plots",
+          "passed": true,
+          "evidence": "matched /scatter/i in context.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "interactive-streamlit-sensor-log",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 12,
+        "total": 12,
+        "time_seconds": 65.6,
+        "tokens": 21531,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": false,
+          "evidence": "viz dir exists: False"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/interactive_page.sh exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/interactive_page.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "parsed CSV exists with 800 rows",
+          "passed": false,
+          "evidence": "file missing"
+        },
+        {
+          "text": "visualizations/streamlit/index.py exists",
+          "passed": false,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit/index.py"
+        },
+        {
+          "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+          "passed": false,
+          "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "streamlit code references the 'site' and/or 'sensor' columns",
+          "passed": false,
+          "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "streamlit code plots a time-series of value (line/altair chart)",
+          "passed": false,
+          "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/streamlit missing"
+        },
+        {
+          "text": "context.md mentions the streamlit dashboard",
+          "passed": false,
+          "evidence": "iteration-3/eval-3-interactive-streamlit-sensor-log/without_skill/outputs/visualizations/info/context.md missing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "interactive-streamlit-sensor-log",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 12,
+        "failed": 0,
+        "total": 12,
+        "time_seconds": 577.5,
+        "tokens": 96184,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "visualizations/ directory exists at the project root",
+          "passed": true,
+          "evidence": "viz dir exists: True"
+        },
+        {
+          "text": "visualizations/scripts/parser.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/parser.py"
+        },
+        {
+          "text": "visualizations/parse_input.sh exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/parse_input.sh"
+        },
+        {
+          "text": "visualizations/interactive_page.sh exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/interactive_page.sh"
+        },
+        {
+          "text": "visualizations/info/context.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/context.md"
+        },
+        {
+          "text": "visualizations/info/how_to_use.md exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/how_to_use.md"
+        },
+        {
+          "text": "parsed CSV has 800 rows",
+          "passed": true,
+          "evidence": "rows=800 (file: sensor_log__parsed.csv)"
+        },
+        {
+          "text": "visualizations/streamlit/index.py exists",
+          "passed": true,
+          "evidence": "path: iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/streamlit/index.py"
+        },
+        {
+          "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+          "passed": true,
+          "evidence": "matched /selectbox|multiselect|radio|checkbox/i in streamlit/pages/1_time_series.py"
+        },
+        {
+          "text": "streamlit code references the 'site' and/or 'sensor' columns",
+          "passed": true,
+          "evidence": "matched /(site|sensor)/i in streamlit/index.py"
+        },
+        {
+          "text": "streamlit code plots a time-series of value (line/altair chart)",
+          "passed": true,
+          "evidence": "matched /line_chart|altair_chart|plotly_chart|sns\\.lineplot|st\\.line/i in streamlit/pages/1_time_series.py"
+        },
+        {
+          "text": "context.md mentions the streamlit dashboard",
+          "passed": true,
+          "evidence": "matched /streamlit/i in context.md"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.0559,
+        "stddev": 0.04,
+        "min": 0.0,
+        "max": 0.0909
+      },
+      "time_seconds": {
+        "mean": 209.4333,
+        "stddev": 193.5265,
+        "min": 65.6,
+        "max": 483.0
+      },
+      "tokens": {
+        "mean": 21802.3333,
+        "stddev": 1163.9165,
+        "min": 20532,
+        "max": 23344
+      }
+    },
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 353.0,
+        "stddev": 160.9012,
+        "min": 208.6,
+        "max": 577.5
+      },
+      "tokens": {
+        "mean": 84660.3333,
+        "stddev": 9378.0268,
+        "min": 73213,
+        "max": 96184
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.94",
+      "time_seconds": "+143.6",
+      "tokens": "+62858"
+    }
+  },
+  "notes": []
+}

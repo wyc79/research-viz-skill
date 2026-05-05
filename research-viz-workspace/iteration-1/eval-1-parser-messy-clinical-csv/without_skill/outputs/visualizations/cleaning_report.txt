@@ -1,0 +1,13 @@
+Clinical trial cleaning report
+========================================
+Input rows:                 200
+Rows dropped (notes empty): 83
+Output rows:                117
+patient_age non-numeric strings coerced to NaN: 3
+
+Median-fills (after notes drop):
+  - patient_age: filled 14 missing with median = 52.0
+  - recovery_days: filled 0 missing with median = 3.9
+  - blood_pressure: filled 17 missing with median = 119.4
+
+visit_date: left as-is (string).

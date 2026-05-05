@@ -1,0 +1,6 @@
+{
+  "slug": "body_mass-violin-per-species",
+  "kind": "violin_species",
+  "title": "Body mass distribution, per species",
+  "y": "body_mass_g"
+}

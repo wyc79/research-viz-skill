@@ -131,18 +131,13 @@ Tested on three realistic prompts: parse a messy clinical CSV, generate two plot
 
 | Metric | with skill | baseline (no skill) | Δ |
 |---|---|---|---|
-| Pass rate (44 assertions across 3 evals) | **100%** | 4.5% | **+95 pp** |
-| Avg. wall time | 175 s | 83 s | +92 s |
-| Avg. tokens | 51 k | 24 k | +27 k |
+| Pass rate (36 assertions across 3 evals) | **100%** | 6% | **+94 pp** |
+| Avg. wall time | 353 s | 209 s | +144 s |
+| Avg. tokens | 85 k | 22 k | +63 k |
 
-The baselines aren't broken — they produce *something* — but they all freelance their own folder structures (one wrote `app.py` straight at the project root; another invented `trial_data_clean.csv` next to a stray `parser.py`). The skill produces a single canonical reproducible workspace every time. The token / time premium is the cost of doing it properly.
+The baselines aren't broken — they produce *something* — but they all freelance their own folder structures. In this run: one wrote `app.py` and `interactive_page.sh` at the project root with no `visualizations/` tree at all; another dropped a single `make_plots.py` next to two PNGs named ad-hoc (`scatter_petal_length_vs_width.png`, `violin_sepal_length.png`); the third invented `parse_trial_data.py` and a `trial_data_clean.csv`. The skill produces a single canonical reproducible workspace every time, with the cleaning rules / plot recipes / streamlit pages baked into the python files so the user can rerun the wrappers six months later without an agent in the loop. The token / time premium is the cost of that — reading SKILL.md and the relevant AGENT.md, scaffolding the tree, trimming unused branches, baking decisions into `PROJECT_STRATEGIES` / `PROJECT_RECIPES`, and writing a closing `info/context.md`.
 
-> The eval numbers above predate the recent additions (`PROJECT_STRATEGIES` / `PROJECT_RECIPES`, the `agents/` split, **style_infer**, **significance_test**, **domain_viz**). The eval expectations under `research-viz/evals/evals.json` have been updated; a fresh re-run isn't recorded here yet.
-
-Browse the actual outputs and assertion-by-assertion grades:
-
-- [Iteration 1 review](research-viz-workspace/iteration-1-review.html) — with skill vs no skill, side-by-side
-- [Iteration 2 review](research-viz-workspace/iteration-2-review.html) — after renames + self-locating wrappers
+The full assertion-by-assertion grades and timing breakdowns live under `research-viz-workspace/iteration-3/` (`grading.json`, `timing.json`, `benchmark.json` per run). The grading rubric respects the skill's "trim unused subskills" rule — for a parser-only eval the agent is allowed to delete `plot_gen.py` / `generate_plot.sh` rather than ship dead code, which is why the assertion count shrank from earlier iterations (44 → 36).
 
 ---
 
@@ -164,7 +159,6 @@ Browse the actual outputs and assertion-by-assertion grades:
 │   ├── references/             deeper-dive reading (missing data, plotting patterns,
 │   │                            streamlit, env mgmt, figure-design guidelines)
 │   └── scripts/scaffold.py     creates a fresh visualizations/ tree
-├── research-viz.skill          packaged installer (drop into Claude)
 ├── example/                    worked example using Palmer Penguins
 └── research-viz-workspace/     evaluation artefacts (test runs, side-by-side viewers)
 ```

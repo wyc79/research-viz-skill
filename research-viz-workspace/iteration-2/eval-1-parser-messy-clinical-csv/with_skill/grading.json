@@ -1,0 +1,85 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/scripts/plot_gen.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/plot_gen.py"
+    },
+    {
+      "text": "visualizations/scripts/helpers/utils.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/scripts/fcns/utils.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/generate_plot.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/generate_plot.sh"
+    },
+    {
+      "text": "visualizations/interactive_page.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/interactive_page.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "intermediate_data/parsed_results.csv exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/parsed_results.csv"
+    },
+    {
+      "text": "intermediate_data/parsed_results.meta.json exists and lists strategies",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-1-parser-messy-clinical-csv/with_skill/outputs/visualizations/intermediate_data/parsed_results.meta.json"
+    },
+    {
+      "text": "parsed_results.csv has 200 rows or fewer (drop_row may shrink)",
+      "passed": true,
+      "evidence": "rows=117, cols=8"
+    },
+    {
+      "text": "patient_age column in parsed_results.csv is numeric",
+      "passed": true,
+      "evidence": "dtype=float64"
+    },
+    {
+      "text": "blood_pressure column has no NaN (median was applied)",
+      "passed": true,
+      "evidence": "NaN count=0"
+    },
+    {
+      "text": "context.md mentions parser/parsing/cleaning",
+      "passed": true,
+      "evidence": "matched /parser/i in context.md"
+    }
+  ],
+  "summary": {
+    "passed": 15,
+    "failed": 0,
+    "total": 15,
+    "pass_rate": 1.0
+  }
+}

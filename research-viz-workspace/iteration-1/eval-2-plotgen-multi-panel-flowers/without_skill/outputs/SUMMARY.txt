@@ -1,0 +1,36 @@
+Flowers visualization task - SUMMARY
+=====================================
+
+Input
+-----
+- data/flowers.csv (150 rows, 50 per species: setosa, versicolor, virginica)
+- Columns: species, sepal_length, sepal_width, petal_length, petal_width
+
+Workspace set up
+----------------
+- visualizations/                  output PNGs
+- visualizations/scripts/          plot scripts
+- visualizations/CONTEXT.md        workspace context (dataset, layout, conventions)
+
+Plots produced
+--------------
+1. visualizations/petal_scatter.png
+   - Scatter of petal_length (x) vs petal_width (y), colored by species.
+   - Script: visualizations/scripts/plot_petal_scatter.py
+
+2. visualizations/sepal_length_violin.png
+   - Violin plot of sepal_length per species (with inner box).
+   - Script: visualizations/scripts/plot_sepal_violin.py
+
+Conventions
+-----------
+- seaborn whitegrid / talk context, "deep" palette (consistent across plots).
+- PNG @ 150 dpi, tight bbox.
+
+Reproduce
+---------
+  cd outputs
+  python3 visualizations/scripts/plot_petal_scatter.py
+  python3 visualizations/scripts/plot_sepal_violin.py
+
+Status: DONE.

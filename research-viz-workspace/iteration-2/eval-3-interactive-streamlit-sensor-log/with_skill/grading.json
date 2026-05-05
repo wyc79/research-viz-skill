@@ -1,0 +1,85 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/scripts/plot_gen.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/plot_gen.py"
+    },
+    {
+      "text": "visualizations/scripts/helpers/utils.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/scripts/fcns/utils.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/generate_plot.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/generate_plot.sh"
+    },
+    {
+      "text": "visualizations/interactive_page.sh exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/interactive_page.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "parsed_results.csv has 800 rows",
+      "passed": true,
+      "evidence": "rows=800"
+    },
+    {
+      "text": "visualizations/streamlit/index.py exists",
+      "passed": true,
+      "evidence": "path: /sessions/lucid-vigilant-fermat/mnt/Visualization Skill/research-viz-workspace/iteration-2/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/visualizations/streamlit/index.py"
+    },
+    {
+      "text": "streamlit code has filter widgets (selectbox/multiselect/radio)",
+      "passed": true,
+      "evidence": "matched /selectbox|multiselect|radio|checkbox/i in streamlit/pages/1_sensor_timeseries.py"
+    },
+    {
+      "text": "streamlit code references the 'site' and/or 'sensor' columns",
+      "passed": true,
+      "evidence": "matched /(site|sensor)/i in streamlit/pages/1_sensor_timeseries.py"
+    },
+    {
+      "text": "streamlit code plots a time-series of value (line/altair chart)",
+      "passed": true,
+      "evidence": "matched /line_chart|altair_chart|plotly_chart|sns\\.lineplot|st\\.line/i in streamlit/pages/1_sensor_timeseries.py"
+    },
+    {
+      "text": "context.md mentions the streamlit dashboard",
+      "passed": true,
+      "evidence": "matched /streamlit/i in context.md"
+    }
+  ],
+  "summary": {
+    "passed": 15,
+    "failed": 0,
+    "total": 15,
+    "pass_rate": 1.0
+  }
+}

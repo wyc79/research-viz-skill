@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-05-05T04:59:18",
+  "data_dir": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/data",
+  "combine_mode": "per_file",
+  "single_file_input": true,
+  "has_combined_csv": false,
+  "combined_csv": null,
+  "canonical_csv": "trial_data_messy__parsed.csv",
+  "per_file_outputs": [
+    {
+      "source_file": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-1-parser-messy-clinical-csv/with_skill/outputs/data/trial_data_messy.csv",
+      "source_relative": "trial_data_messy.csv",
+      "parsed_path": "trial_data_messy__parsed.csv",
+      "n_rows": 117,
+      "n_cols": 7,
+      "dtypes": {
+        "trial_id": "int64",
+        "treatment": "object",
+        "patient_age": "float64",
+        "recovery_days": "float64",
+        "blood_pressure": "float64",
+        "visit_date": "object",
+        "notes": "object"
+      },
+      "strategies_applied": {
+        "notes": "drop_row",
+        "patient_age": "median",
+        "recovery_days": "median",
+        "blood_pressure": "median"
+      }
+    }
+  ]
+}

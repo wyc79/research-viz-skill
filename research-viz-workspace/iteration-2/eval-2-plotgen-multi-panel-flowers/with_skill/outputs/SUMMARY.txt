@@ -1,0 +1,71 @@
+research-viz run summary — 2026-05-04
+======================================
+
+Project root:
+  /Users/yuanchenwang/Documents/Claude/Projects/Visualization Skill/research-viz-workspace/iteration-2/eval-2-plotgen-multi-panel-flowers/with_skill/outputs
+
+Input:
+  data/flowers.csv  (150 rows x 5 cols; species + sepal_length, sepal_width, petal_length, petal_width)
+  Already clean — no missing values, no dtype anomalies.
+
+What was done
+-------------
+1. Scaffolded the visualizations/ workspace using research-viz/scripts/scaffold.py.
+   Tree created:
+     visualizations/
+       README.md
+       info/{context.md, how_to_use.md}
+       parse_input.sh, generate_plot.sh, interactive_page.sh
+       scripts/{parser.py, plot_gen.py, helpers/utils.py}
+       intermediate_data/
+       plots/
+       streamlit/{index.py, pages/}
+
+2. Ran parser (parse_input.sh --no-interactive).
+   Output:
+     visualizations/intermediate_data/parsed_results.csv      (150 rows, 6 cols incl. __source__)
+     visualizations/intermediate_data/parsed_results.meta.json
+   No missing-data strategies applied — dataset clean.
+
+3. Generated plot 1 — scatter of petal_length vs petal_width colored by species.
+   Output dir: visualizations/plots/petal-length-vs-width-by-species/
+     figure.png  (300 dpi)
+     figure.pdf
+     data.csv    (tidy data backing the plot)
+     spec.json   (prompt + slug + data source)
+   Axes: petal_length on Y, petal_width on X; hue = species.
+
+4. Generated plot 2 — violin plot of sepal_length per species.
+   Output dir: visualizations/plots/sepal-length-by-species-violin/
+     figure.png  (300 dpi)
+     figure.pdf
+     data.csv
+     spec.json
+   X = species (categorical), Y = sepal_length; default inner = quartile.
+
+5. Updated visualizations/info/context.md with dataset notes and an activity-log
+   entry for each of the steps above. how_to_use.md was untouched (no behavior
+   change to the wrappers).
+
+How to rerun
+------------
+  cd <project-root>
+  bash visualizations/parse_input.sh --no-interactive
+  bash visualizations/generate_plot.sh "scatter of petal_length vs petal_width colored by species" \
+      --slug petal-length-vs-width-by-species
+  bash visualizations/generate_plot.sh "violin plot of sepal_length per species" \
+      --slug sepal-length-by-species-violin
+
+Environment used
+----------------
+  Python 3.10 (ambient python3); pandas, numpy, matplotlib, seaborn, openpyxl
+  importable. No venv created.
+
+Caveats
+-------
+- The bundled grammar parses "Y vs X" as Y-on-y-axis vs X-on-x-axis. If a future
+  request expects the opposite convention, override with --slug and edit
+  scripts/plot_gen.py's `build_plot` for that specific plot.
+- The parser added a `__source__` column listing the origin file; harmless but
+  may need to be ignored by future plots that select all columns.
+- Streamlit was NOT launched (per task constraints).

@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-05-05T05:04:13",
+  "data_dir": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/data",
+  "combine_mode": "per_file",
+  "single_file_input": true,
+  "has_combined_csv": false,
+  "combined_csv": null,
+  "canonical_csv": "sensor_log__parsed.csv",
+  "per_file_outputs": [
+    {
+      "source_file": "/sessions/vibrant-eager-hypatia/mnt/Visualization Skill/research-viz-workspace/iteration-3/eval-3-interactive-streamlit-sensor-log/with_skill/outputs/data/sensor_log.csv",
+      "source_relative": "sensor_log.csv",
+      "parsed_path": "sensor_log__parsed.csv",
+      "n_rows": 800,
+      "n_cols": 5,
+      "dtypes": {
+        "ts": "datetime64[ns]",
+        "site": "object",
+        "sensor": "object",
+        "value": "float64",
+        "ok": "bool"
+      },
+      "strategies_applied": {}
+    }
+  ]
+}

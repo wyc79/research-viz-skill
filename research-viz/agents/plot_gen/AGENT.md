@@ -55,6 +55,24 @@ If the parser ran in `per_file` mode with multiple inputs (no combined CSV), the
 
 Per the SKILL.md trim rule: delete unused branches in `build_plot()` (drop `violin` / `box` / `hist` / `line` / `heatmap` cases the project doesn't use), drop the prompt-grammar parser if `PROJECT_RECIPES` is the only entry point, drop unused imports. If `PROJECT_RECIPES` ends up with one entry, consider collapsing the `--recipe` / `--all` dispatch entirely to a single direct call. Keep concise comments on the surviving steps.
 
+## Check the matplotlib / seaborn / statannotations versions first
+
+Before writing any plot code, confirm what's actually installed — several APIs in this stack drift in non-obvious ways:
+
+```bash
+python3 -c "import matplotlib, seaborn; print('matplotlib', matplotlib.__version__, '/ seaborn', seaborn.__version__)"
+python3 -c "import statannotations; print('statannotations', statannotations.__version__)" 2>/dev/null || true
+```
+
+Traps that hit the renderer specifically (full table in `references/env-management.md`):
+
+- **seaborn ≥ 0.12** moved from `ci=95` to `errorbar=("ci", 95)` on relplot/lineplot/barplot — the old `ci` kwarg is gone in 0.14. Use `errorbar=...` unconditionally if seaborn is ≥ 0.12.
+- **seaborn ≥ 0.13** is stricter about `hue` + auto-legend interactions on the catplot family. If you set `hue` and don't want a legend, pass `legend=False` explicitly.
+- **matplotlib ≥ 3.9** removed `plt.cm.get_cmap('Blues')` — use `mpl.colormaps['Blues']` instead.
+- **statannotations 0.6** lets you pass a pre-computed p-value via `Annotator.set_pvalues_and_annotate(pvalues=[…])` after `configure(test=None, ...)`. On 0.5 or older you have to let the Annotator run the test itself, which means re-doing assumption checks the **significance_test** subskill already did.
+
+Pick the legacy or modern form based on what's installed and move on — don't stall. If a recipe genuinely needs a feature only the newer version has, surface that to the user before touching the env.
+
 ## Overlaying significance markers (statannotations)
 
 When the user asks to put significance brackets / stars / p-values on a plot ("add a t-test bracket between groups A and B", "show p-values on the violin"), use the [`statannotations`](https://github.com/trevismd/statannotations) package — it composes cleanly with seaborn `boxplot` / `violinplot` / `barplot` and handles bracket layout, multiple-comparison correction, and label formatting.

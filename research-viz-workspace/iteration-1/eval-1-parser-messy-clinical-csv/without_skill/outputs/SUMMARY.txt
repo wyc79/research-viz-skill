@@ -1,0 +1,1 @@
+Created visualizations/ next to data/, ran parser on trial_data_messy.csv (200 rows): coerced patient_age text to numeric, dropped 83 rows with missing notes, median-filled numerics (age=52.0, recovery_days=3.9, blood_pressure=119.4), kept visit_date as-is, wrote 117-row visualizations/trial_data_clean.csv.

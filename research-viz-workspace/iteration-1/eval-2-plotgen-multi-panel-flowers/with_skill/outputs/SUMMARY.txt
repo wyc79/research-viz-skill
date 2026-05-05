@@ -1,0 +1,1 @@
+Scaffolded visualizations/ workspace, parsed data/flowers.csv (150 rows, no missing values), and produced two plots: scatter of petal_length vs petal_width colored by species, and violin of sepal_length per species.

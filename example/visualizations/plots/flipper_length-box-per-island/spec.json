@@ -1,0 +1,6 @@
+{
+  "slug": "flipper_length-box-per-island",
+  "kind": "box_island",
+  "title": "Flipper length distribution, per island",
+  "y": "flipper_length_mm"
+}

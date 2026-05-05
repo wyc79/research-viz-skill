@@ -1,0 +1,65 @@
+{
+  "expectations": [
+    {
+      "text": "visualizations/ directory exists at the project root",
+      "passed": true,
+      "evidence": "viz dir exists: True"
+    },
+    {
+      "text": "visualizations/scripts/parser.py exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/scripts/parser.py"
+    },
+    {
+      "text": "visualizations/parse_input.sh exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/parse_input.sh"
+    },
+    {
+      "text": "visualizations/info/context.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md"
+    },
+    {
+      "text": "visualizations/info/how_to_use.md exists",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/how_to_use.md"
+    },
+    {
+      "text": "intermediate_data parsed CSV exists (new <dataset>__parsed.csv or legacy parsed_results.csv)",
+      "passed": false,
+      "evidence": "no parsed CSV under intermediate_data/"
+    },
+    {
+      "text": "strategies are recorded (meta.json or parsed_index.json)",
+      "passed": false,
+      "evidence": "path: iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/intermediate_data/parsed_index.json"
+    },
+    {
+      "text": "parsed CSV has 200 rows or fewer",
+      "passed": false,
+      "evidence": "file missing"
+    },
+    {
+      "text": "patient_age numeric",
+      "passed": false,
+      "evidence": "file missing"
+    },
+    {
+      "text": "blood_pressure no NaN",
+      "passed": false,
+      "evidence": "file missing"
+    },
+    {
+      "text": "context.md mentions parser/parsing/cleaning",
+      "passed": false,
+      "evidence": "iteration-3/eval-1-parser-messy-clinical-csv/without_skill/outputs/visualizations/info/context.md missing"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 10,
+    "total": 11,
+    "pass_rate": 0.0909
+  }
+}
