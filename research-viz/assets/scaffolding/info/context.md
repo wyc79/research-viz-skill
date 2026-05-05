@@ -1,6 +1,6 @@
 # Context — research-viz workspace
 
-> **For future agents:** read this file first, before touching anything in `visualizations/`. Then quickly `ls scripts/`, `ls plots/`, `ls streamlit/pages/`, `ls intermediate_data/`, `ls info/style_refs/`, and check `__DATA_DIR__` for any new files. Reconcile drift before acting. **Also check `info/style_guide.md`** before writing or modifying any plot_gen / streamlit code (it may not be flagged below; check directly). After any meaningful change, append an entry to the **Activity log** below.
+> **For future agents:** before touching anything in `visualizations/`, **read every `.md` in `info/`** — `context.md` (this file), `style_guide.md` (if present), `project_specific_knowledge.md` (if present), and `how_to_use.md`. Then quickly `ls scripts/`, `ls plots/`, `ls streamlit/pages/`, `ls intermediate_data/`, `ls significance/` (if present), `ls info/style_refs/` (if present), `ls info/knowledge/` (if present), and check `__DATA_DIR__` for any new files. Reconcile drift before acting. While the work proceeds, update the relevant supporting `info/*.md` files as you go; write `context.md` last as the closing entry.
 
 ## Style guide
 
@@ -28,6 +28,9 @@ _(none yet — populated by the **style_infer** subskill once a reference paper 
 - `intermediate_data/combined__parsed.csv` (and `.meta.json`) — only present when the parser ran with `--combine concat` or `--combine both`. Has a `__source__` column tagging each row's origin.
 - `info/style_refs/` — verbatim copies of any reference papers / figures / brand guides the user provided.
 - `info/style_guide.md` — present once **style_infer** has run; describes project-wide palette / typography / plot-type preferences plus any per-plot or per-page overrides.
+- `info/project_specific_knowledge.md` — present once **domain_viz** has run; documents domain-specific packages and patterns the agent learned for this project (with reference links so a new session can relearn).
+- `info/knowledge/` — long-form per-topic knowledge files when `project_specific_knowledge.md` would otherwise outgrow itself.
+- `significance/` — present once **significance_test** has run; one `.txt` + `.json` per test, plus `README.md` index.
 
 ## Dataset notes
 

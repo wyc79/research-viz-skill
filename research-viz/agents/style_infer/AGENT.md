@@ -39,11 +39,12 @@ The `info/style_refs/` folder is the *only* place reference uploads live. Don't 
 
 For each reference the user provides:
 
-1. Copy the file verbatim into `visualizations/info/style_refs/<original_filename>`. Don't rename, don't transcode, don't pre-process. Future agents may want to look at the original.
+1. Copy the file verbatim into `visualizations/info/style_refs/<original_filename>`. Don't rename, don't transcode, don't pre-process. Future agents may want to look at the original. **Do this even if you can't see the image yourself** — the file still belongs in `style_refs/` for later sessions or models that *can* read it.
 2. Note the type:
    - **Image** (`.png`, `.jpg`, `.svg`, `.webp`): a single figure to mimic.
    - **PDF**: typically a paper or a brand guide. May contain multiple figures.
-3. If the user gave plain-text preferences instead of (or alongside) a file, just record those — the reference set may be empty.
+3. **Check whether you can actually read the file.** If the running model has multi-modal vision and the file is an image / PDF you can decode, proceed to Step 2. If you can't read the image (no vision capability, or unsupported format), be honest with the user: "I've saved the reference at `info/style_refs/<file>` but I can't read it directly. Could you describe the style — palette / fonts / plot kinds — or shall I exit and you can come back with a model that can see images?" Do **not** invent style features you didn't actually observe.
+4. If the user gave plain-text preferences instead of (or alongside) a file, just record those — the reference set may be empty.
 
 If no `style_refs/` folder exists yet, create it.
 

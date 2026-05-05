@@ -15,9 +15,11 @@ The deliverable is a **project-specific recipe**: every choice the user makes du
 │   │   ├── parser/
 │   │   ├── plot_gen/
 │   │   ├── interactive/
-│   │   └── style_infer/
+│   │   ├── style_infer/
+│   │   ├── significance_test/
+│   │   └── domain_viz/
 │   ├── assets/scaffolding/    ← templates copied into the user's project
-│   ├── references/            ← deeper-dive reading on missing data, plot patterns, streamlit, env mgmt
+│   ├── references/            ← deeper-dive reading on missing data, plot patterns, streamlit, env mgmt, figure-design guidelines
 │   └── scripts/scaffold.py    ← creates a fresh visualizations/ tree for a new project
 ├── research-viz.skill         ← packaged installer (drop this into Claude)
 ├── example/                   ← worked example using the Palmer Penguins dataset
@@ -36,15 +38,18 @@ The deliverable is a **project-specific recipe**: every choice the user makes du
 
 When you point an agent at a `data/` folder with tabular files in it and ask for a visualization, the skill walks the agent through this workflow:
 
-1. **Resumption check.** If a `visualizations/` folder already exists, read `visualizations/info/context.md` first, also read `info/style_guide.md` if present, reconcile any drift between what context.md claims and what's actually on disk, then proceed. Designed so a fresh agent in a new session can take over without losing the thread.
-2. **Folder + pilot prompt.** Confirm where the data lives. For large or per-session research datasets, surface the option of pointing at a small `pilot_data/` first (iterate on plots cheaply, then re-run on the full data with a `DATA_DIR=...` switch — no script edits needed).
-3. **Env handling.** Detect missing packages (pandas, numpy, matplotlib, seaborn, streamlit, altair). Always *ask* before installing — offer current env / project-local venv / fresh conda env / skip.
-4. **Four subskills, picked by intent** (each documented under `research-viz/agents/<name>/AGENT.md`):
+1. **Resumption check.** If a `visualizations/` folder already exists, the agent reads **every `.md` under `info/`** (`context.md`, `style_guide.md`, `project_specific_knowledge.md`, `how_to_use.md`) before doing anything, reconciles any drift between what `context.md` claims and what's actually on disk, then proceeds. Designed so a fresh agent in a new session can take over without losing the thread.
+2. **Folder + pilot prompt.** Confirm where the data lives. For large or per-session research datasets, surface the option of pointing at a small `pilot_data/` first (iterate on plots cheaply, then re-run on the full data with a `DATA_DIR=...` switch — no script edits needed). After the pilot vis lands, the agent prompts to re-run on the full dataset.
+3. **Env handling.** Detect missing packages (pandas, numpy, matplotlib, seaborn, streamlit, altair, statannotations, scipy/statsmodels for tests, plus any domain package). Always *ask* before installing — offer current env / project-local venv / fresh conda env / skip.
+4. **Six subskills, picked by intent** (each documented under `research-viz/agents/<name>/AGENT.md`):
    - **parser** — pandas+numpy quality checks (per-column dtype consistency, missing-value counts, mixed-type detection) and missing-data handling. The agreed-on strategies, custom cleaning, and intermediate-folder layout are baked in via `PROJECT_STRATEGIES`, `apply_project_specific_cleaning()`, and `project_reorganize()` at the top of `parser.py`. Default behavior for multi-file input is to mirror the `data/` tree under `intermediate_data/` — one cleaned `<name>__parsed.csv` per session/patient/run, no aggregation. `--combine concat` or `--combine both` produces a single `combined__parsed.csv` instead.
-   - **plot_gen** — matplotlib + seaborn static plots. Free-form `bash generate_plot.sh "<prompt>"` works for ad-hoc charts; accepted plots get registered in `PROJECT_RECIPES` (with `PROJECT_PALETTE` for colors) so `bash generate_plot.sh --recipe <slug>` or `--all` reproduce them verbatim. 300dpi PNG + PDF + the underlying tidy CSV next to each figure for reproducibility.
-   - **interactive** — streamlit landing page + auto-discovered subpages under `streamlit/pages/`, with altair as a supplement for linked-brushing or selection-driven views. Falls back to a "viewer" of pre-rendered images for very large data. Filters, default selections, palette, and chart specs are hardcoded into the page files.
-   - **style_infer** — given a reference paper (PDF) / figure (image) / brand guide and/or explicit user preferences, produces `info/style_guide.md` (project-wide palette, typography, figure dimensions, plot-type preferences, plus per-plot or per-page overrides). Stores reference uploads verbatim under `info/style_refs/`. Adds a "Style guide active" callout to `context.md` so future sessions always read it before generating new plots.
-5. **Always close the loop in `info/context.md`** — short activity-log entries that let the next agent know what ran, which files changed, and any gotchas. New styling preferences get folded into `info/style_guide.md` so they outlive the current session.
+   - **plot_gen** — matplotlib + seaborn static plots. Free-form `bash generate_plot.sh "<prompt>"` works for ad-hoc charts; accepted plots get registered in `PROJECT_RECIPES` (with `PROJECT_PALETTE` for colors) so `bash generate_plot.sh --recipe <slug>` or `--all` reproduce them verbatim. 300dpi PNG + PDF + the underlying tidy CSV next to each figure. Captions are *offered as a next step*, not auto-generated. `statannotations` is wired in for significance brackets; the agent iterates on user screenshots when feedback is visual.
+   - **interactive** — streamlit landing page + auto-discovered subpages under `streamlit/pages/`, with altair as a supplement for linked-brushing or selection-driven views. Falls back to a "viewer" of pre-rendered images for very large data. Filters, default selections, palette, and chart specs are hardcoded into the page files. Default tooltips, an info expander, and `help=` strings ship with every page (Rule 4 applied to dashboards).
+   - **style_infer** — given a reference paper (PDF) / figure (image) / brand guide and/or explicit user preferences, produces `info/style_guide.md` (project-wide palette, typography, figure dimensions, plot-type preferences, plus per-plot or per-page overrides). Stores reference uploads verbatim under `info/style_refs/`. Adds a "Style guide active" callout to `context.md`. If the running model can't see images, the agent saves the reference anyway and tells the user honestly — no hallucinating image content.
+   - **significance_test** — only on request: t-tests, Mann-Whitney, ANOVA + Tukey, chi-square, correlation, etc. Results land in `significance/<slug>.txt` (human-readable) and `<slug>.json` (machine-readable, consumable by `statannotations`). Always reports effect sizes and assumption-check notes alongside p-values.
+   - **domain_viz** — for visualizations outside the standard chart types (EEG/fMRI/brain, networks, gene tracks, structures, …). The agent asks the user for a python package + docs link (or searches), learns enough to produce one figure, and persists what it learned to `info/project_specific_knowledge.md` (or `info/knowledge/<topic>.md` for long-form). Python-only — be honest if no python package exists. Suggests condensing into a real skill if the knowledge accumulates.
+5. **Iterating from screenshots.** When the user marks up an existing figure / dashboard ("legend overlaps in the upper right", "more padding here"), the agent looks at the actual image before interpreting — and frankly says so when it can't see images.
+6. **Close the loop in `info/`.** During the session, update the supporting files (`style_guide.md`, `project_specific_knowledge.md`, `how_to_use.md`) as work proceeds. Write `context.md` last — short activity-log entries that let the next agent know what ran, which files changed, and any gotchas.
 
 ## The deliverable layout
 
@@ -54,10 +59,12 @@ When you point an agent at a `data/` folder with tabular files in it and ask for
 └── visualizations/
     ├── README.md
     ├── info/
-    │   ├── context.md          (continuation handoff for future agents)
-    │   ├── how_to_use.md       (human-only guide to running the python scripts / shell wrappers)
-    │   ├── style_guide.md      (when style_infer has run)
-    │   └── style_refs/         (reference papers / figures / brand guides)
+    │   ├── context.md                          (recent activity log — written last)
+    │   ├── how_to_use.md                       (human-only guide to running the python scripts / shell wrappers)
+    │   ├── style_guide.md                      (when style_infer has run)
+    │   ├── style_refs/                         (reference papers / figures / brand guides)
+    │   ├── project_specific_knowledge.md       (when domain_viz has run — what was learned about niche packages)
+    │   └── knowledge/                          (long-form per-topic notes when the above gets dense)
     ├── parse_input.sh          (self-locating; honors $DATA_DIR for swapping pilot ↔ full)
     ├── generate_plot.sh        (--recipe <slug> | --all | --list-recipes | "<ad-hoc prompt>")
     ├── interactive_page.sh
@@ -72,6 +79,7 @@ When you point an agent at a `data/` folder with tabular files in it and ask for
     │   ├── combined__parsed.csv  (only with --combine concat / both)
     │   └── combined__parsed.meta.json
     ├── plots/<slug>/{figure.png, figure.pdf, data.csv, spec.json}
+    ├── significance/           (when significance_test has run — .txt + .json per test, plus README index)
     └── streamlit/
         ├── index.py
         └── pages/

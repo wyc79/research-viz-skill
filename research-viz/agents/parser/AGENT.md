@@ -26,7 +26,7 @@ The bundled `assets/scaffolding/scripts/parser.py` is a working starting point. 
 
 A `parsed_index.json` is **always** written, listing every per-file output (with row counts, dtypes, strategies applied), the canonical CSV downstream tools should default to, and whether a combined CSV exists.
 
-**Subsequent transforms** (reshape, imputation pass, normalization, filtering, etc.) write *new* CSVs alongside the parsed outputs using the suffix convention (`<dataset>__long.csv`, `<dataset>__imputated.csv`, `<dataset>__zscored.csv`, …) and are appended to `parsed_index.json`. **Never overwrite `__parsed.csv`** — keep each transform stage as its own file so the lineage is inspectable.
+**Subsequent transforms** (reshape, imputation pass, normalization, filtering, etc.) write *new* files alongside the parsed outputs using the suffix convention (`<dataset>__long.csv`, `<dataset>__imputated.csv`, `<dataset>__zscored.csv`, …) and are appended to `parsed_index.json`. **Never overwrite `__parsed.csv`** — keep each transform stage as its own file so the lineage is inspectable. The extension stays CSV for the standard tabular parser; **domain_viz** may write non-CSV intermediates (`.fif`, `.nii.gz`, `.h5ad`, …) following the same `<dataset>__<stage>.<ext>` pattern — see `agents/domain_viz/AGENT.md` and the SKILL.md naming-convention section.
 
 ## What to bake in (project-time)
 
@@ -40,6 +40,8 @@ Once the user has agreed on cleaning rules, write them into the anchors at the t
 The end-state: `bash parse_input.sh` (zero arguments) reproduces the cleaned outputs the user just approved, without re-prompting.
 
 After parsing once successfully, append the strategies and any data quirks to `info/context.md`.
+
+**If the user is running on pilot data**, note that in `context.md` (e.g. "parser ran against `pilot_data/` — 12 of 240 sessions"). Then surface a next-step prompt after the matching plot or dashboard finishes: "Pilot looks good. Want me to re-run on the full dataset? `DATA_DIR=$(pwd)/data bash visualizations/parse_input.sh` will reuse the same `PROJECT_STRATEGIES` you just baked in." Don't switch to full data unprompted — the user might want to iterate on the pilot first.
 
 ## Trim before delivering
 

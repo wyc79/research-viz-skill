@@ -39,7 +39,9 @@ Print, screen, slide, and poster all have different constraints — DPI, aspect 
 
 The figure should be readable without the surrounding text — assume the reader skims figures first. Axes, legends, units, and a clear title carry most of that weight; any context that doesn't fit on the figure goes in a caption.
 
-*Practical move:* always set explicit axis labels with units and a title that states the message (not just the variables). When the user is producing a paper figure, prompt for the intended caption and either render parts of it as a subtitle or save it alongside the figure (e.g. `caption.txt` next to `figure.png`).
+*Practical move for static plots:* always set explicit axis labels with units and a title that states the message (not just the variables) — that's usually enough. Don't auto-generate `caption.txt` or burn paragraph-length captions onto the image; those are paper-context, not plot-content. **Offer caption generation as a next step** ("want me to draft a paper-style caption?") and only write `plots/<slug>/caption.txt` when the user accepts.
+
+*Practical move for streamlit / dashboards:* the same rule applies, just in a different shape — a stranger should be able to open the page and grasp what it shows. Use `st.title` + `st.caption`, the `help=` argument on widgets for in-line tooltips, explicit `tooltip=[...]` on altair charts, and one collapsed `st.expander("Notes / data source")` with provenance + caveats. Keep it discoverable (tooltips, expanders), not in-your-face.
 
 ### 5. Do not trust the defaults
 

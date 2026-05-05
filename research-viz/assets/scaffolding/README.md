@@ -6,6 +6,8 @@ This folder is a self-contained workspace for parsing, plotting, and interactive
 
 - See [`info/how_to_use.md`](info/how_to_use.md) for how to run things yourself.
 - See [`info/style_guide.md`](info/style_guide.md) (if it exists) for the project's visualization style — palette, typography, plot-type preferences, plus any per-plot overrides. Reference materials live in [`info/style_refs/`](info/style_refs/).
+- See [`info/project_specific_knowledge.md`](info/project_specific_knowledge.md) (if it exists) for domain-specific packages and patterns this project depends on (e.g. `mne` for EEG topomaps).
+- See [`significance/`](significance/) for any statistical-test outputs (one `.txt` + `.json` per test).
 
 Three entry points:
 

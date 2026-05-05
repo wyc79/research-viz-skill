@@ -24,6 +24,17 @@ The guide is a *guide, not a strict standard* — it drives new pages and any pa
 
 Adapt `assets/scaffolding/streamlit/index.py` as the landing page. Each new "exploration topic" goes in `streamlit/pages/<n>_<topic>.py` so streamlit picks it up automatically in the sidebar. Wrap every data load in `@st.cache_data` with a hash key derived from the file path + mtime so reruns are fast. Run via `bash visualizations/interactive_page.sh` (which is just `streamlit run visualizations/streamlit/index.py` with the right env activation).
 
+## Default informative content (the "captions are not optional" rule, applied to dashboards)
+
+A streamlit page should never be a wall of widgets and chart with zero context. Apply Rule 4 from `references/figure-design-guidelines.md` (Rougier et al. 2014) but in dashboard form — bake in **enough default info that a stranger could open the page and understand what they're looking at**, without cluttering it:
+
+- A short page title and one-line subtitle (`st.title` / `st.caption`) telling the reader what this page is for.
+- Tooltips on widgets via the `help=` parameter of `st.selectbox` / `st.slider` / `st.multiselect` — explain what each filter does and what units it's in.
+- Tooltips on chart points: prefer `st.altair_chart` with explicit `tooltip=[...]` listing all useful columns, or use `hover_data` if you fall back to plotly. For native streamlit charts, the default hover is usually OK.
+- One collapsed `st.expander("Notes / data source")` with where the data came from, the cleaning strategies applied, and any known caveats (lifted from `info/context.md`).
+
+Keep it discoverable, not in-your-face. Tooltips and expanders are perfect because they're zero-cost when the user doesn't need them.
+
 ## What to bake in (project-time)
 
 **Bake project-specific behavior directly into the page files** — the filters, color choices, default selections, axis labels, and chart specs that the user accepted should be hardcoded in the `.py` so the user can `bash interactive_page.sh` later and land on the same dashboard. Don't depend on URL params or environment variables for the canonical setup.
@@ -31,6 +42,16 @@ Adapt `assets/scaffolding/streamlit/index.py` as the landing page. Each new "exp
 If `PROJECT_PALETTE` is defined in `plot_gen.py`, import it and use it for the streamlit charts too — consistency between static and interactive views matters.
 
 After adding a page, append a line to `info/context.md`: which page, what it filters, which CSV it reads.
+
+## Iterating on a page from a screenshot
+
+If the user sends a screenshot of the running streamlit page and asks for a fix ("the filter sidebar is too wide", "the chart is squashed when I select two sites", "tooltip text is unreadable"):
+
+- **If you can see images:** look at the actual screenshot first, then interpret the feedback. Layout problems are easier to diagnose visually.
+- **If you can't see images:** say so plainly, ask the user to describe the problem in component / property terms ("which widget? what value?"), or offer to exit and come back with a vision-capable model.
+- Never guess. A frank "I can't see this — describe it" is the right response, not a hallucinated fix.
+
+After applying the change, ask the user to reload the page and confirm before moving on.
 
 ## Trim before delivering
 

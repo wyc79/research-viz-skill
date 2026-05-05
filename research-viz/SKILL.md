@@ -7,7 +7,7 @@ description: Reproducible Python research-visualization workflow for tabular dat
 
 Build (and resume) a reproducible Python research-visualization workspace against a tabular dataset. The deliverable is always a `visualizations/` folder next to the user's `data/`, with three callable entry points (`parse_input.sh`, `generate_plot.sh`, `interactive_page.sh`) and human + agent-readable context in `visualizations/info/`.
 
-There are four subskills inside this skill, and any single user request usually triggers one of them. **Each lives in its own folder under `agents/<name>/AGENT.md` — read the matching AGENT.md before running the subskill.**
+There are six subskills inside this skill, and any single user request usually triggers one of them. **Each lives in its own folder under `agents/<name>/AGENT.md` — read the matching AGENT.md before running the subskill.**
 
 | Subskill | Trigger | Read |
 |---|---|---|
@@ -15,8 +15,10 @@ There are four subskills inside this skill, and any single user request usually 
 | **plot_gen** | "scatter of …", "violin per …", "correlation heatmap", "small multiples of …", "make me a figure" | `agents/plot_gen/AGENT.md` |
 | **interactive** | "let me filter by …", "make a dashboard", "I want to brush / zoom", "show me a streamlit app" | `agents/interactive/AGENT.md` |
 | **style_infer** | user uploads a paper / figure / brand guide and says "match this style", or specifies palette/typography/plot-type preferences in plain text | `agents/style_infer/AGENT.md` |
+| **significance_test** | user asks for "t-test of X vs Y", "ANOVA across groups", "stat test", "p-values", "is this difference significant" | `agents/significance_test/AGENT.md` |
+| **domain_viz** | user asks for visualizations outside the standard chart types and pointing at a specialized python package — EEG/fMRI/brain (`mne`, `nilearn`), molecular (`py3Dmol`), networks (`networkx`+`pyvis`), gene tracks (`pyGenomeTracks`), etc. | `agents/domain_viz/AGENT.md` |
 
-Pick the subskill from the user's request. If the user is starting from raw files, run **parser** first; **plot_gen** and **interactive** both consume the parser's outputs (selected via `intermediate_data/parsed_index.json`'s `canonical_csv` field) by default. If a `visualizations/info/style_guide.md` exists (produced by **style_infer**), every plot_gen and interactive run must read and follow it before generating anything new.
+Pick the subskill from the user's request. If the user is starting from raw files, run **parser** first; **plot_gen** and **interactive** both consume the parser's outputs (selected via `intermediate_data/parsed_index.json`'s `canonical_csv` field) by default. If a `visualizations/info/style_guide.md` exists (produced by **style_infer**), every plot_gen and interactive run must read and follow it before generating anything new. **significance_test** and **domain_viz** are typically *next-step* prompts you offer the user, not things you run unprompted.
 
 ### Hard rule: bake every project-specific decision into the `.py` files
 
@@ -81,6 +83,14 @@ df["visit_date"] = pd.to_datetime(...)
 
 Comment the *intent* and *why this dataset needs it*, not the syntax. The combination of "trimmed code" + "explains what's happening per step" is what makes the file readable as a project recipe rather than a generic tool.
 
+### Hard rule: be honest about what you can see
+
+Several subskills (style_infer, the screenshot-feedback loop in plot_gen / interactive) involve looking at images. **If the model running this skill doesn't have multi-modal capabilities, say so plainly and don't hallucinate image content.** Concretely:
+
+- When the user uploads a paper / figure / screenshot for **style_infer**: still copy the file verbatim into `visualizations/info/style_refs/`, but tell the user honestly you can't read it. Ask them to describe the relevant style features (palette, typography, plot kinds), or offer to exit the subskill.
+- When the user sends a screenshot of an existing visualization with feedback ("upper right corner is wrong", "more padding in the middle"): if you *can* see images, look at the actual screenshot before interpreting the feedback — don't reason from the user's text alone. If you *can't* see images, say so and ask the user to describe what's wrong, or offer to exit.
+- Never guess at what's in an image. A frank "I can't see this — please describe it or exit" is the right response, not a confident hallucination.
+
 ### Hard rule: `data/` is read-only
 
 The skill never writes to, renames, or deletes anything inside `data/`. `data/` is the user's source of truth — treat it as read-only at every step. All cleaned, reshaped, imputed, or otherwise transformed outputs go into `intermediate_data/`.
@@ -92,10 +102,10 @@ If the layout under `data/` is awkward (e.g. mixed file types in one folder, opa
 Every file the parser (or any later transform) writes into `intermediate_data/` must use a meaningful suffix that names the *kind of transformation* applied, joined to the source dataset name with a double underscore:
 
 ```
-<original_dataset_name>__<stage>.csv
+<original_dataset_name>__<stage>.<ext>
 ```
 
-Examples:
+Examples (tabular case — the default):
 
 - `penguins__parsed.csv` — basic load + quality check + missing-data strategies applied
 - `penguins__long.csv` — pivoted from wide to long
@@ -103,9 +113,20 @@ Examples:
 - `penguins__zscored.csv` — standardized columns
 - `penguins__filtered_adults.csv` — row filter applied
 
+**The extension follows the format the data actually needs.** CSV is the right choice for the tabular data the standard parser handles, but for **domain_viz** workflows the format is whatever the domain package expects — forcing everything into CSV is silly and lossy when an established binary format exists. Use the native format and keep the same naming pattern:
+
+- `subj01__parsed.fif` — `mne` Raw / Epochs / Evoked written via `.save(...)`
+- `subj01__alpha_band.fif` — band-passed and saved as fif
+- `bold_run1__resampled.nii.gz` — `nilearn` 4-D NIfTI image after resampling
+- `complex_AB__aligned.pdb` — aligned protein structure
+- `cells__filtered.h5ad` — `scanpy` AnnData
+- `volume__downsampled.zarr` — `napari` / `zarr` chunked array
+
+Pick the format the next step in the pipeline expects to load — never force a round-trip through CSV unless that's genuinely the cleanest representation. Record the format choice (and the reason, if non-obvious) in `info/project_specific_knowledge.md` and ensure each entry in `parsed_index.json` lists the actual `parsed_path` with extension.
+
 Never use generic names like `parsed_results.csv` or `cleaned.csv`. The dataset prefix lets a human (or a future agent) glance at the folder and immediately see where each file came from; the suffix tells them what was done. When several stages stack on the same dataset, chain suffixes only if it materially helps (`penguins__parsed__long.csv`); otherwise keep the latest stage as the suffix and rely on `parsed_index.json` for the lineage.
 
-The two reserved names produced automatically by the bundled parser are:
+The two reserved names produced automatically by the bundled tabular parser are:
 
 - `<dataset>__parsed.csv` — per-file output, one per input file (mirrors `data/` layout, or a *better* layout you chose for `intermediate_data/`).
 - `combined__parsed.csv` — only when the user explicitly asks to stack files (`--combine concat` or `--combine both`); has a `__source__` column tagging each row's origin.
@@ -114,21 +135,24 @@ The two reserved names produced automatically by the bundled parser are:
 
 ## The big picture: this skill is *resumable*
 
-A user may share their `visualizations/` folder with another agent (or come back to it themselves a week later). That folder is the source of truth, not this conversation. **Treat `visualizations/info/context.md` as the handoff document** — it is the first thing you read, and the last thing you update.
+A user may share their `visualizations/` folder with another agent (or come back to it themselves a week later). That folder is the source of truth, not this conversation. **The `info/` folder is the handoff layer** — `context.md` is the recent-activity log, `style_guide.md` carries visual decisions, `project_specific_knowledge.md` carries domain learnings, `how_to_use.md` is the human-facing guide. Read all of them at the start; update the relevant supporting files *during* the work; write `context.md` last as the closing entry.
 
 Be cautious: users edit files outside the agent loop. The context file can drift from reality. The protocol below handles that.
 
 ### Step 0 — Resumption protocol (run *before* doing anything else)
 
-1. Look for `./visualizations/info/context.md` in the current working directory.
-2. If it exists:
-   - Read it in full.
-   - **Always check for `visualizations/info/style_guide.md`.** If it exists, read it before writing or modifying any plot_gen / streamlit code, regardless of whether `context.md` flags it. The guide may also contain per-plot or per-page overrides (e.g. "for the petal scatter, use square markers"); honor those when re-rendering or extending the matching plot. The guide is a *guide*, not a strict standard — you don't need to audit existing code for discrepancies, but every *new* figure or page you create should follow it. If the user requests a style change during the session, update `style_guide.md` (and re-render affected plots) so the guide stays current.
-   - Run a quick on-disk reconciliation: `ls visualizations/scripts/`, `ls visualizations/plots/`, `ls visualizations/intermediate_data/`, `ls visualizations/streamlit/pages/`, `ls visualizations/info/style_refs/` (if present) — and check `data/` for new or removed files. Compare to what `context.md` claims.
-   - If on-disk state diverges from `context.md` (new files, missing files, modified scripts), surface the drift to the user in one short message before acting: "context.md says X was the latest plot, but I see Y/Z on disk and `parser.py` was modified — should I (a) update context.md to match reality, (b) re-run parsing, (c) ignore?" Then proceed based on the answer.
-3. If no `visualizations/` exists yet, this is a fresh start — proceed to Step 1 (Pre-flight).
+1. Locate `./visualizations/info/`. If the whole `visualizations/` doesn't exist, it's a fresh start — skip to Step 1 (Pre-flight).
+2. **Read every `.md` in `info/` before doing anything else.** The set you might find:
+   - `context.md` — recent activity log, project-at-a-glance, drift signals.
+   - `style_guide.md` (if present) — palette / typography / plot-type preferences + per-plot overrides. Read this before writing or modifying any plot_gen / streamlit code, regardless of whether `context.md` flags it.
+   - `project_specific_knowledge.md` (if present) — domain-specific things a previous agent learned (e.g. how to use `mne` for EEG topomaps). May reference `info/knowledge/<topic>.md` for longer notes — read those if the user's request touches that topic.
+   - `how_to_use.md` — the human-facing guide. Skim so you don't contradict it; update it when the wrappers' behavior actually changes.
+3. Quick on-disk reconciliation: `ls visualizations/scripts/`, `ls visualizations/plots/`, `ls visualizations/intermediate_data/`, `ls visualizations/streamlit/pages/`, `ls visualizations/significance/` (if present), `ls visualizations/info/style_refs/` (if present), `ls visualizations/info/knowledge/` (if present) — and check `data/` for new or removed files. Compare to what `context.md` claims.
+4. If on-disk state diverges from `context.md` (new files, missing files, modified scripts), surface the drift to the user in one short message before acting: "context.md says X was the latest plot, but I see Y/Z on disk and `parser.py` was modified — should I (a) update context.md to match reality, (b) re-run parsing, (c) ignore?" Then proceed based on the answer.
 
-After every meaningful action (parser ran, plots produced, streamlit app updated, style_guide built or revised), append a concise entry to `context.md`. See `assets/scaffolding/info/context.md` for the format and tone. Concise but informative — a future agent should be able to reconstruct *what was done and where to find it* from this file alone.
+**While the work proceeds:** update the relevant `info/*.md` *as you go* — `style_guide.md` when the user expresses a styling preference, `project_specific_knowledge.md` when you learn something domain-specific, `how_to_use.md` when behavior of the wrappers changes. Don't batch these to the end; they're work-product, not just documentation.
+
+**At the close of the session:** write `context.md` last — append one concise entry per meaningful action (parser ran, plots produced, streamlit app updated, style_guide built or revised, significance test added, project_specific_knowledge appended). See `assets/scaffolding/info/context.md` for the format and tone. A future agent should be able to reconstruct *what was done and where to find it* from `context.md` alone, then load the supporting `info/*.md` files for depth.
 
 ---
 
@@ -142,10 +166,12 @@ The expected layout is:
 └── visualizations/             (this skill produces this)
     ├── README.md
     ├── info/
-    │   ├── context.md          (continuation point for future agents)
-    │   ├── how_to_use.md
-    │   ├── style_guide.md      (created by style_infer if any reference / preference exists)
-    │   └── style_refs/         (verbatim copies of reference papers / figures / brand guides)
+    │   ├── context.md                    (recent activity log — written last)
+    │   ├── how_to_use.md                 (human-facing guide)
+    │   ├── style_guide.md                (created by style_infer if any reference / preference exists)
+    │   ├── style_refs/                   (verbatim copies of reference papers / figures / brand guides)
+    │   ├── project_specific_knowledge.md (created by domain_viz when a non-standard package was learned)
+    │   └── knowledge/                    (only when project_specific_knowledge.md gets too long)
     ├── parse_input.sh
     ├── generate_plot.sh
     ├── interactive_page.sh
@@ -160,6 +186,7 @@ The expected layout is:
     │   ├── combined__parsed.csv          (only with --combine concat / both)
     │   └── <subdirs mirroring data/, OR a cleaner layout you designed if data/ is awkward>
     ├── plots/                  (subfolder per plot prompt)
+    ├── significance/           (created by significance_test — .txt tables of test results)
     └── streamlit/
         ├── index.py
         └── pages/
@@ -210,20 +237,21 @@ Common ordering:
 
 ---
 
-## Step 4 — Always close the loop in `context.md`
+## Step 4 — Always close the loop in `info/`
 
-After any subskill run, edit `visualizations/info/context.md` to append:
+The session closes in this order: **supporting files first, `context.md` last.**
 
-- what was requested (one sentence),
-- which subskill ran,
-- which files changed (relative paths),
-- one or two gotchas a future agent should know (e.g. "luminosity column had 12% missing, used median imputation"; "streamlit page falls back to pre-rendered PNGs because dataset is 4M rows").
+1. **Update the supporting `info/*.md` files** with anything that came out of the session:
+   - **`style_guide.md`** — any styling preference the user expressed (project-wide *or* per-plot, even something as small as "for the petal scatter, use square markers instead of dots"). Style preferences belong in the guide, not buried in a single recipe's `extra` field, so future plots stay consistent.
+   - **`project_specific_knowledge.md`** — anything you learned about a domain-specific package or visualization technique that wasn't in your priors (the `domain_viz` subskill drives this).
+   - **`how_to_use.md`** — only when the shell wrappers' behavior actually changed (e.g. a venv was created, a new subpage was added, a new subfolder is now part of the layout).
+2. **Then write `context.md`** — append one concise entry covering the whole session:
+   - what was requested (one sentence),
+   - which subskill(s) ran,
+   - which files changed (relative paths),
+   - one or two gotchas a future agent should know (e.g. "luminosity column had 12% missing, used median imputation"; "streamlit page falls back to pre-rendered PNGs because dataset is 4M rows"; "added project_specific_knowledge.md for `mne` topomaps").
 
-Keep it concise. The point is *continuation* — not a changelog. If the file grows past ~200 lines, summarize older entries into a "Summary so far" section at the top and trim.
-
-If the user expressed any styling preference during the session — even a per-plot one ("for the petal scatter, use square markers instead of dots") — make sure it landed in `info/style_guide.md` before you wrap up. See `agents/style_infer/AGENT.md` for the format. Style preferences belong in the guide, not buried in a single recipe's `extra` field, so future plots can stay consistent.
-
-Also keep `visualizations/info/how_to_use.md` accurate — it should reflect the current shell wrappers and how to run them. The bundled scaffolding already contains a usable starting version; touch it only when behavior changes (e.g. a venv was created, a new subpage was added).
+Keep `context.md` concise. The point is *continuation* — not a changelog. If the file grows past ~200 lines, summarize older entries into a "Summary so far" section at the top and trim.
 
 ---
 

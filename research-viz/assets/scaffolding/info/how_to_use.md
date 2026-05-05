@@ -230,12 +230,15 @@ visualizations/
 │   ├── combined__parsed.csv    only when --combine concat or both
 │   └── combined__parsed.meta.json
 ├── plots/<slug>/{figure.png, figure.pdf, data.csv, spec.json}
+├── significance/               (if present) per-test .txt + .json + README index
 ├── info/
-│   ├── context.md              continuation handoff for future sessions
-│   ├── how_to_use.md           this file
-│   ├── style_guide.md          (if present) project palette / typography / plot-type preferences + per-plot overrides
-│   └── style_refs/             reference papers / figures / brand guides used to derive the style
-└── README.md                   short pointer to this file
+│   ├── context.md                          continuation handoff for future sessions
+│   ├── how_to_use.md                       this file
+│   ├── style_guide.md                      (if present) palette / typography / plot-type preferences + per-plot overrides
+│   ├── style_refs/                         reference papers / figures / brand guides used to derive the style
+│   ├── project_specific_knowledge.md       (if present) domain-specific package learnings (e.g. mne, nilearn)
+│   └── knowledge/                          long-form per-topic notes when the above gets dense
+└── README.md                               short pointer to this file
 ```
 
 ---
