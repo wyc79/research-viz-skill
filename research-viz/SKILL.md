@@ -7,13 +7,108 @@ description: Reproducible Python research-visualization workflow for tabular dat
 
 Build (and resume) a reproducible Python research-visualization workspace against a tabular dataset. The deliverable is always a `visualizations/` folder next to the user's `data/`, with three callable entry points (`parse_input.sh`, `generate_plot.sh`, `interactive_page.sh`) and human + agent-readable context in `visualizations/info/`.
 
-There are three subskills inside this skill, and any single user request usually triggers one of them:
+There are four subskills inside this skill, and any single user request usually triggers one of them. **Each lives in its own folder under `agents/<name>/AGENT.md` — read the matching AGENT.md before running the subskill.**
 
-1. **parser** — read raw data, do quality checks, handle missing values, write `intermediate_data/parsed_results.csv`.
-2. **plot_gen** — produce static publication-style plots with matplotlib + seaborn into `plots/<prompt-slug>/`.
-3. **interactive** — build a streamlit app (with optional altair charts) under `streamlit/`, falling back to pre-rendered images for very large data.
+| Subskill | Trigger | Read |
+|---|---|---|
+| **parser** | "parse / clean / load / read this", or any other subskill is requested but `intermediate_data/` is empty | `agents/parser/AGENT.md` |
+| **plot_gen** | "scatter of …", "violin per …", "correlation heatmap", "small multiples of …", "make me a figure" | `agents/plot_gen/AGENT.md` |
+| **interactive** | "let me filter by …", "make a dashboard", "I want to brush / zoom", "show me a streamlit app" | `agents/interactive/AGENT.md` |
+| **style_infer** | user uploads a paper / figure / brand guide and says "match this style", or specifies palette/typography/plot-type preferences in plain text | `agents/style_infer/AGENT.md` |
 
-Pick the subskill from the user's request. If the user is starting from raw files, run **parser** first; **plot_gen** and **interactive** both consume `intermediate_data/parsed_results.csv` by default.
+Pick the subskill from the user's request. If the user is starting from raw files, run **parser** first; **plot_gen** and **interactive** both consume the parser's outputs (selected via `intermediate_data/parsed_index.json`'s `canonical_csv` field) by default. If a `visualizations/info/style_guide.md` exists (produced by **style_infer**), every plot_gen and interactive run must read and follow it before generating anything new.
+
+### Hard rule: bake every project-specific decision into the `.py` files
+
+The python scripts you produce are *the project's recipe*. After your session ends the user must be able to run `bash visualizations/parse_input.sh`, `bash visualizations/generate_plot.sh --all`, and `bash visualizations/interactive_page.sh` and reproduce **byte-for-byte the same artifacts you produced** — without re-prompting any agent, without remembering CLI flags, without copy-pasting `--strategy '{"col":"median"}'` from chat.
+
+This means **every choice you made during the session must be written into the python file as the default**, not passed as a runtime flag. Specifically:
+
+- **Imputation strategies** the user agreed to: edit `parser.py`'s `PROJECT_STRATEGIES` dict so `bash parse_input.sh` runs non-interactively and applies them automatically.
+- **Custom dtype coercions, drop rules, datetime parsing, unit conversions, column renames**: write them into `parser.py` (a clearly-named function near the top, e.g. `apply_project_specific_cleaning(df)`).
+- **Intermediate folder reorganization** (when `data/` is awkward and you laid out a cleaner tree under `intermediate_data/`): encode the mapping in `parser.py` (e.g. a `PROJECT_REORGANIZE` function that maps each source path → desired parsed path), so the same reorganized layout falls out on every rerun.
+- **Plot recipes**: every plot the user accepted goes into `plot_gen.py`'s `PROJECT_RECIPES` dict (slug, prompt, data source, hue/palette/log-scale/figsize, etc.). Wire them up so `bash generate_plot.sh --recipe <slug>` reruns one and `--all` regenerates the lot.
+- **Streamlit pages**: each accepted exploration is a `.py` file under `streamlit/pages/` with the project-specific filters / charts / colors hardcoded. No runtime configuration needed.
+- **Colors / themes / styling**: define a project palette near the top of `plot_gen.py` (or in `helpers/utils.py`) and reference it everywhere — don't sprinkle hex codes inline.
+
+The scaffolding under `assets/scaffolding/` is a **starting template**, not the final state. Different projects will end up with very different `parser.py` and `plot_gen.py` contents — that's the point. When the user later wants to change something (a different imputation strategy, a new plot, a different palette), an agent edits the python files; the user keeps using the same shell wrappers.
+
+While a session is in progress: feel free to run things on the user's behalf via direct python calls or by passing flags. But before you wrap up, **migrate every choice into the python files** so the wrappers are self-contained going forward.
+
+### Hard rule: trim the python files to *only what this project uses*
+
+The scaffolded `parser.py` and `plot_gen.py` are starting templates that contain branches for every supported case (every plot kind, every missing-data strategy, multi-file modes, the prompt grammar parser, etc.). The version you *deliver* must not.
+
+Once the project's behavior is settled:
+
+- **Delete every code path that doesn't run for this project.** If the user only ever wants scatter plots, remove the `violin` / `box` / `hist` / `line` / `heatmap` branches from `build_plot()` (and the prompt-grammar lookup that picks between them — replace it with a direct call). If only `median` and `drop_row` are ever used, drop the unused branches in `apply_strategy()`. If the data is always a single file, remove the `--combine` plumbing entirely.
+- **Delete the unused imports** that fall out of those removals (`re`, `seaborn`-when-only-matplotlib-is-used, etc.). Run the script once to confirm nothing's referenced after the trim.
+- **Inline what no longer needs to be configurable.** If `PROJECT_RECIPES` ends up with one recipe, the recipe-dispatch / `--recipe` / `--all` machinery is overkill — collapse to a single function and have the wrapper call it. The user's mental model should be: "this script does the thing I want, and the code inside is exactly the code that produced the thing."
+- **Drop the boilerplate "this is a starting point" docstrings** that referenced the original scaffold. Replace them with a short docstring describing what *this* parser/plot_gen actually does for *this* project.
+
+The principle: a human reading `scripts/parser.py` should see a tight, project-specific script — not a generic library with most of the code unreachable for their dataset.
+
+### Hard rule: comment the surviving code
+
+Every function that remains, and every non-trivial step inside it, gets a concise comment explaining what it's doing *for this project specifically*. Aim for one short line per logical step — enough that a non-expert can follow what's happening without reading pandas docs.
+
+Good (concise, project-specific):
+
+```python
+# Drop rows where the patient gave no consent (consent column is "Y"/"N").
+df = df[df["consent"] == "Y"]
+
+# Convert visit_date from "DD-MM-YYYY" strings to datetime; rows that fail to parse
+# are kept as NaT and handled later by the drop_row strategy on visit_date.
+df["visit_date"] = pd.to_datetime(df["visit_date"], format="%d-%m-%Y", errors="coerce")
+```
+
+Bad (generic, what-not-why):
+
+```python
+# convert column to numeric  ← obvious from the call
+df["age"] = pd.to_numeric(df["age"])
+```
+
+Bad (overlong essay):
+
+```python
+# Here we use pd.to_datetime which is pandas' standard datetime parser. It accepts
+# a format argument that follows the strftime conventions, see the pandas docs at
+# ...
+df["visit_date"] = pd.to_datetime(...)
+```
+
+Comment the *intent* and *why this dataset needs it*, not the syntax. The combination of "trimmed code" + "explains what's happening per step" is what makes the file readable as a project recipe rather than a generic tool.
+
+### Hard rule: `data/` is read-only
+
+The skill never writes to, renames, or deletes anything inside `data/`. `data/` is the user's source of truth — treat it as read-only at every step. All cleaned, reshaped, imputed, or otherwise transformed outputs go into `intermediate_data/`.
+
+If the layout under `data/` is awkward (e.g. mixed file types in one folder, opaque names like `final_FINAL_v3.csv`, or one giant flat dump that should be grouped by subject/session), **do not reorganize the source**. Instead, design a cleaner layout *inside* `intermediate_data/` and write the transformed outputs there. Note the mapping (source → reorganized path) in `info/context.md` and in `parsed_index.json` (each per-file entry already records `source_file` and `parsed_path`).
+
+### Naming convention for intermediate outputs
+
+Every file the parser (or any later transform) writes into `intermediate_data/` must use a meaningful suffix that names the *kind of transformation* applied, joined to the source dataset name with a double underscore:
+
+```
+<original_dataset_name>__<stage>.csv
+```
+
+Examples:
+
+- `penguins__parsed.csv` — basic load + quality check + missing-data strategies applied
+- `penguins__long.csv` — pivoted from wide to long
+- `penguins__imputated.csv` — imputation pass distinct from `__parsed`
+- `penguins__zscored.csv` — standardized columns
+- `penguins__filtered_adults.csv` — row filter applied
+
+Never use generic names like `parsed_results.csv` or `cleaned.csv`. The dataset prefix lets a human (or a future agent) glance at the folder and immediately see where each file came from; the suffix tells them what was done. When several stages stack on the same dataset, chain suffixes only if it materially helps (`penguins__parsed__long.csv`); otherwise keep the latest stage as the suffix and rely on `parsed_index.json` for the lineage.
+
+The two reserved names produced automatically by the bundled parser are:
+
+- `<dataset>__parsed.csv` — per-file output, one per input file (mirrors `data/` layout, or a *better* layout you chose for `intermediate_data/`).
+- `combined__parsed.csv` — only when the user explicitly asks to stack files (`--combine concat` or `--combine both`); has a `__source__` column tagging each row's origin.
 
 ---
 
@@ -28,11 +123,12 @@ Be cautious: users edit files outside the agent loop. The context file can drift
 1. Look for `./visualizations/info/context.md` in the current working directory.
 2. If it exists:
    - Read it in full.
-   - Run a quick on-disk reconciliation: `ls visualizations/scripts/`, `ls visualizations/plots/`, `ls visualizations/intermediate_data/`, `ls visualizations/streamlit/pages/` — and check `data/` for new or removed files. Compare to what `context.md` claims.
+   - **Always check for `visualizations/info/style_guide.md`.** If it exists, read it before writing or modifying any plot_gen / streamlit code, regardless of whether `context.md` flags it. The guide may also contain per-plot or per-page overrides (e.g. "for the petal scatter, use square markers"); honor those when re-rendering or extending the matching plot. The guide is a *guide*, not a strict standard — you don't need to audit existing code for discrepancies, but every *new* figure or page you create should follow it. If the user requests a style change during the session, update `style_guide.md` (and re-render affected plots) so the guide stays current.
+   - Run a quick on-disk reconciliation: `ls visualizations/scripts/`, `ls visualizations/plots/`, `ls visualizations/intermediate_data/`, `ls visualizations/streamlit/pages/`, `ls visualizations/info/style_refs/` (if present) — and check `data/` for new or removed files. Compare to what `context.md` claims.
    - If on-disk state diverges from `context.md` (new files, missing files, modified scripts), surface the drift to the user in one short message before acting: "context.md says X was the latest plot, but I see Y/Z on disk and `parser.py` was modified — should I (a) update context.md to match reality, (b) re-run parsing, (c) ignore?" Then proceed based on the answer.
 3. If no `visualizations/` exists yet, this is a fresh start — proceed to Step 1 (Pre-flight).
 
-After every meaningful action (parser ran, plots produced, streamlit app updated), append a concise entry to `context.md`. See `assets/scaffolding/info/context.md` for the format and tone. Concise but informative — a future agent should be able to reconstruct *what was done and where to find it* from this file alone.
+After every meaningful action (parser ran, plots produced, streamlit app updated, style_guide built or revised), append a concise entry to `context.md`. See `assets/scaffolding/info/context.md` for the format and tone. Concise but informative — a future agent should be able to reconstruct *what was done and where to find it* from this file alone.
 
 ---
 
@@ -47,7 +143,9 @@ The expected layout is:
     ├── README.md
     ├── info/
     │   ├── context.md          (continuation point for future agents)
-    │   └── how_to_use.md
+    │   ├── how_to_use.md
+    │   ├── style_guide.md      (created by style_infer if any reference / preference exists)
+    │   └── style_refs/         (verbatim copies of reference papers / figures / brand guides)
     ├── parse_input.sh
     ├── generate_plot.sh
     ├── interactive_page.sh
@@ -55,10 +153,12 @@ The expected layout is:
     │   ├── parser.py
     │   ├── plot_gen.py
     │   └── helpers/utils.py
-    ├── intermediate_data/
+    ├── intermediate_data/      (writable; data/ is never modified)
     │   ├── parsed_index.json   (always; manifest of what got parsed)
-    │   ├── parsed_results.csv  (only when input is a single file, or --combine concat)
-    │   └── <data/-mirrored subdirs with per-file CSVs when input has multiple files>
+    │   ├── <dataset>__parsed.csv         (one per input file; suffix names the stage)
+    │   ├── <dataset>__long.csv           (example follow-on transform)
+    │   ├── combined__parsed.csv          (only with --combine concat / both)
+    │   └── <subdirs mirroring data/, OR a cleaner layout you designed if data/ is awkward>
     ├── plots/                  (subfolder per plot prompt)
     └── streamlit/
         ├── index.py
@@ -95,54 +195,18 @@ See `references/env-management.md` for the exact commands and the snippet that n
 
 ## Step 3 — Run the requested subskill
 
-### Subskill A — parser (file reader + quality checks)
+Read the matching `agents/<name>/AGENT.md` before running. Each subskill file documents triggers, behavior, what to bake in, what to trim, and which references to consult.
 
-Use when the user gives you raw files and either says "parse / clean / load / read this", or any other subskill is requested but `intermediate_data/` is empty.
+- **parser** → [`agents/parser/AGENT.md`](agents/parser/AGENT.md)
+- **plot_gen** → [`agents/plot_gen/AGENT.md`](agents/plot_gen/AGENT.md)
+- **interactive** → [`agents/interactive/AGENT.md`](agents/interactive/AGENT.md)
+- **style_infer** → [`agents/style_infer/AGENT.md`](agents/style_infer/AGENT.md)
 
-The bundled `assets/scaffolding/scripts/parser.py` is a working starting point. Adapt — don't rewrite from scratch — for the specific dataset:
+Common ordering:
 
-- It auto-detects file format by extension (`.csv`, `.tsv`, `.txt` with sniffed delimiter, `.xlsx`/`.xls`).
-- It runs three quality checks and writes a short report to stdout: per-column dtype consistency (does any cell deviate from the column's modal type?), missing-value counts, and obvious format anomalies (mixed date formats, stray strings in numeric columns).
-- Missing-data handling is **interactive by default**. The script prints the missing-value summary, then asks the user per column (or globally) which strategy to apply: `ignore` (leave NaN), `drop_row`, `drop_col`, `mean`, `median`, `mode`, `ffill`, `bfill`, `constant:<value>`, or `custom` (the user supplies a small Python expression).
-- For a non-interactive run (e.g. CI, or rerunning after the user has already chosen), the script accepts `--strategy '{"col_a":"mean","col_b":"drop_row"}'` as JSON.
-- **Output layout depends on input shape**, controlled by `--combine`:
-   - **Single input file** (or `--combine concat` with multiple files): writes `intermediate_data/parsed_results.csv` plus `parsed_results.meta.json`. This is the "everything in one frame" path that downstream subskills default to.
-   - **Multiple input files** with the default `--combine per_file` (recommended for research data where each file is a session / patient / client / run and should *not* be aggregated): the parser **mirrors the `data/` directory structure inside `intermediate_data/`**, writing one cleaned CSV per input file. There is **no** `parsed_results.csv` in this mode — that's deliberate, to avoid pretending sessions are interchangeable.
-   - `--combine both` writes per-file mirrors *and* a combined `parsed_results.csv`.
-- A `parsed_index.json` is **always** written, listing every per-file output (with row counts, dtypes, strategies applied) plus whether a combined CSV exists. This is the manifest downstream tools should read to discover what's available.
-
-When the user describes their data (e.g. "the temperature column has some text like 'N/A'", or "patients have wildly different schemas"), update `parser.py` to handle that specific case — but preserve the structure so the script remains rerunnable. After running it once successfully, append the strategies used to `info/context.md`.
-
-For the menu of missing-data strategies and the rationale behind each, see `references/missing-data-strategies.md`.
-
-### Subskill B — plot_gen (static plots)
-
-Use when the user describes a plot ("scatter of X vs Y colored by Z", "violin per group", "correlation heatmap", "small multiples of <whatever>"). By default it reads `intermediate_data/parsed_results.csv` and writes one or more PNGs (and optionally PDFs) to `plots/<prompt-slug>/`.
-
-Adapt `assets/scaffolding/scripts/plot_gen.py` for the specific request:
-
-- Use seaborn's themed primitives (`relplot`, `displot`, `catplot`, `heatmap`) for almost everything; drop down to matplotlib for layout-heavy figures.
-- Always set explicit axis labels, units (if known from the column meta), a title, and a legend with full names. Save at 300dpi and also save the underlying tidy data as a CSV next to the PNG so the plot is reproducible.
-- The slug for the subfolder is a short kebab-case version of the user's request — e.g. "scatter of mass vs luminosity colored by spectral class" → `mass-vs-luminosity-by-class/`.
-- Append a one-line entry to `info/context.md`: what plot, which columns, where it landed.
-
-**Per-file mode:** if the parser ran in `per_file` mode (no `parsed_results.csv`), the script raises a helpful error listing the per-file outputs so you can pick. Either pass `--data <intermediate_data/path/to/specific.csv>` for a single file, or loop the user-relevant subset (e.g. one plot per session / patient) by reading `parsed_index.json` and invoking `generate_plot.sh` for each, with `--slug` overridden to keep names sane.
-
-For common research-plot recipes (paired axes, log scales, error bars, small multiples, faceting, colorblind-safe palettes), see `references/plotting-patterns.md`.
-
-### Subskill C — interactive (streamlit + altair)
-
-Use when the user wants exploration rather than a fixed figure: "let me filter by …", "make a dashboard", "I want to brush / zoom / drill in", "show me a streamlit app".
-
-Decision rule for streamlit vs. altair vs. fall-back-to-plot_gen:
-
-- **Default** is streamlit (`streamlit/index.py` + `streamlit/pages/<topic>.py`) with native streamlit widgets for filtering and `st.altair_chart(...)` for charts that benefit from altair's interactivity (selection, brushing, linked views).
-- **Add altair** specifically when streamlit's built-in chart helpers are too plain and the interaction (linked brushing, selection-driven filters across charts) is the point of the page. Pure altair pages in `streamlit/pages/` are fine — they are still launched via `streamlit run streamlit/index.py`.
-- **If the data is too large for live computation** (rule of thumb: > 1M rows, or > 200MB, or any chart that would take more than ~2s to render every interaction), switch to a "viewer" mode: pre-render variants with `plot_gen.py` into `plots/<topic>/`, and have the streamlit page show those PNGs with simple controls (a dropdown that picks which pre-rendered figure to display). State this fallback explicitly in `info/context.md` so a future agent knows why the page is image-based.
-
-Adapt `assets/scaffolding/streamlit/index.py` as the landing page. Each new "exploration topic" goes in `streamlit/pages/<topic>.py` so streamlit picks it up automatically in the sidebar. Wrap every data load in `@st.cache_data` with a hash key derived from the file path + mtime so reruns are fast. Run via `bash visualizations/interactive_page.sh` (which is just `streamlit run visualizations/streamlit/index.py` with the right env activation).
-
-For more streamlit and altair patterns, see `references/streamlit-patterns.md`.
+1. If the user's request implies styling intent (uploaded a paper/figure/brand guide, or stated explicit visual preferences), run **style_infer** first so subsequent plots inherit the look from `info/style_guide.md`.
+2. If `intermediate_data/` is empty, run **parser** before any plot/dashboard work.
+3. Then **plot_gen** and/or **interactive** for the actual visualization. Both must read `info/style_guide.md` when it exists.
 
 ---
 
@@ -157,6 +221,8 @@ After any subskill run, edit `visualizations/info/context.md` to append:
 
 Keep it concise. The point is *continuation* — not a changelog. If the file grows past ~200 lines, summarize older entries into a "Summary so far" section at the top and trim.
 
+If the user expressed any styling preference during the session — even a per-plot one ("for the petal scatter, use square markers instead of dots") — make sure it landed in `info/style_guide.md` before you wrap up. See `agents/style_infer/AGENT.md` for the format. Style preferences belong in the guide, not buried in a single recipe's `extra` field, so future plots can stay consistent.
+
 Also keep `visualizations/info/how_to_use.md` accurate — it should reflect the current shell wrappers and how to run them. The bundled scaffolding already contains a usable starting version; touch it only when behavior changes (e.g. a venv was created, a new subpage was added).
 
 ---
@@ -169,5 +235,6 @@ When you need depth on a specific topic, read the appropriate file (don't preloa
 - `references/plotting-patterns.md` — research-plot recipes in seaborn + matplotlib.
 - `references/streamlit-patterns.md` — caching, multi-page apps, altair selections, large-data fallbacks.
 - `references/env-management.md` — venv vs. conda, install commands, how to wire the venv into the `.sh` wrappers.
+- `references/figure-design-guidelines.md` — the ten-rules-for-better-figures cheat sheet (Rougier et al. 2014). General design *guidelines, not gates*; useful when discussing chart choice with the user, when style_infer is making default choices, and when sanity-checking output.
 
 The scaffolding under `assets/scaffolding/` is the single source of truth for the initial file contents — when in doubt, copy from there and adapt rather than writing from scratch.

@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-parser.py — read raw tabular files (csv/tsv/txt/xlsx), run quality checks,
-handle missing data, and write a single cleaned `parsed_results.csv` plus a
-small meta JSON describing what was done.
+parser.py — read raw tabular files (csv/tsv/txt/xlsx) from a read-only
+`data/` directory, run quality checks, handle missing data, and write
+cleaned outputs into `intermediate_data/` using the naming convention
+`<original_dataset_name>__parsed.csv` (one per input file).
+
+`data/` is never written to, renamed, or deleted from. Anything produced
+by this script lives under `--out` (typically `intermediate_data/`).
 
 Designed to be both:
   - **interactive** — prompts the user per column for a missing-data strategy, and
@@ -10,7 +14,10 @@ Designed to be both:
 
 Adapt this script for the specific dataset (e.g. add custom dtype coercions,
 drop garbage columns, parse weird date formats) but keep the high-level shape
-so future reruns are predictable.
+so future reruns are predictable. Follow-on transforms (reshape, imputation
+pass, normalization, …) should write *new* files alongside the parsed ones
+using the same suffix convention: `<dataset>__long.csv`, `<dataset>__imputated.csv`,
+`<dataset>__zscored.csv`, etc. Never overwrite `__parsed.csv`.
 """
 from __future__ import annotations
 
@@ -32,6 +39,69 @@ from helpers.utils import detect_delimiter, slugify  # noqa: E402
 
 VALID_STRATEGIES = {"ignore", "drop_row", "drop_col", "mean", "median", "mode", "ffill", "bfill"}
 # `constant:<value>` is also valid — checked separately.
+
+
+# ============================================================================
+# PROJECT-SPECIFIC CONFIG — edit this block for your dataset.
+#
+# Once an agent (or you) has decided on cleaning rules for this project, write
+# them here so `bash parse_input.sh` reproduces the same cleaned output every
+# time, without having to remember --strategy flags.
+# ============================================================================
+
+# Default per-column missing-data strategies. Used as the default for --strategy
+# AND as the fallback when --no-interactive is passed. Empty dict = ask the user.
+# Example: {"temperature_C": "median", "comment": "drop_col", "patient_age": "drop_row"}
+PROJECT_STRATEGIES: dict[str, str] = {}
+
+# When True, skip the interactive prompts even without --no-interactive on the
+# command line. Set this to True after you've populated PROJECT_STRATEGIES so
+# `bash parse_input.sh` runs end-to-end unattended.
+PROJECT_NONINTERACTIVE_DEFAULT: bool = False
+
+
+def apply_project_specific_cleaning(df: pd.DataFrame, source_path: Path) -> pd.DataFrame:
+    """Project-specific transformations applied to every loaded DataFrame BEFORE
+    quality reporting and missing-data handling.
+
+    Edit this for your dataset. Common things to do here:
+      - rename columns: df = df.rename(columns={"old": "new"})
+      - coerce types: df["age"] = pd.to_numeric(df["age"], errors="coerce")
+      - parse dates: df["visit_date"] = pd.to_datetime(df["visit_date"], errors="coerce")
+      - drop junk columns: df = df.drop(columns=["unnamed_3"], errors="ignore")
+      - clip / sentinel-replace: df["temp_c"] = df["temp_c"].replace(-999, pd.NA)
+
+    `source_path` is provided so you can branch on filename when the same
+    parser runs against heterogeneous files.
+    """
+    return df
+
+
+def project_reorganize(source_relative: Path) -> Path:
+    """Map a source file's path (relative to data/) to the path it should land at
+    under intermediate_data/, MINUS the `__parsed.csv` suffix.
+
+    Default behavior mirrors data/'s structure. Override this if data/ has an
+    awkward layout (flat dump, opaque names, mixed concerns) and you want a
+    cleaner tree under intermediate_data/.
+
+    Example for a flat data/ dump where filenames encode subject/session like
+    `S01_run2_eeg.csv`:
+
+        def project_reorganize(source_relative):
+            stem = source_relative.stem  # 'S01_run2_eeg'
+            subject, run, modality = stem.split('_')
+            return Path(modality) / subject / run
+
+    Returns a path *without* extension; the parser appends `__parsed.csv`.
+    """
+    # Default: mirror data/. Strip the suffix; the caller adds `__parsed.csv`.
+    return source_relative.parent / source_relative.stem
+
+
+# ============================================================================
+# End of project-specific config.
+# ============================================================================
 
 
 def find_input_files(data_dir: Path) -> list[Path]:
@@ -198,7 +268,19 @@ def main() -> int:
         help='JSON object mapping column to strategy, e.g. \'{"temperature_C":"median"}\'. '
         "Skips interactive prompts for listed columns. Strategy is applied per-file when --combine=per_file.",
     )
-    p.add_argument("--no-interactive", action="store_true", help="Apply 'ignore' to anything not in --strategy.")
+    p.add_argument(
+        "--no-interactive",
+        action="store_true",
+        default=PROJECT_NONINTERACTIVE_DEFAULT,
+        help="Apply PROJECT_STRATEGIES (then 'ignore' for anything not listed) without prompting. "
+        "Defaults to PROJECT_NONINTERACTIVE_DEFAULT in this file.",
+    )
+    p.add_argument(
+        "--interactive",
+        dest="no_interactive",
+        action="store_false",
+        help="Force interactive prompts even if PROJECT_NONINTERACTIVE_DEFAULT is True.",
+    )
     p.add_argument(
         "--combine",
         choices=("per_file", "concat", "first", "both"),
@@ -207,10 +289,10 @@ def main() -> int:
             "How to handle multiple input files: "
             "'per_file' (default) — clean each file independently and mirror data/ structure under --out, "
             "useful when sessions/patients shouldn't be aggregated; "
-            "'concat' — stack everything into a single parsed_results.csv with a __source__ column; "
+            "'concat' — stack everything into a single combined__parsed.csv with a __source__ column; "
             "'first' — only use the first discovered file; "
-            "'both' — write per-file mirrors AND parsed_results.csv. "
-            "Note: with a single input file, parsed_results.csv is always written for downstream-tool compatibility."
+            "'both' — write per-file outputs AND combined__parsed.csv. "
+            "Per-file outputs are always named '<original_dataset_name>__parsed.csv'."
         ),
     )
     args = p.parse_args()
@@ -231,44 +313,77 @@ def main() -> int:
     for f in files:
         print(f"  - {f}")
 
-    strategy_overrides = parse_strategy_arg(args.strategy)
+    # Strategy precedence: CLI --strategy overrides PROJECT_STRATEGIES, which
+    # overrides the per-column interactive prompt (or 'ignore' if --no-interactive).
+    strategy_overrides: dict[str, str] = dict(PROJECT_STRATEGIES)
+    strategy_overrides.update(parse_strategy_arg(args.strategy))
+    if PROJECT_STRATEGIES:
+        print(f"PROJECT_STRATEGIES baked into parser.py: {PROJECT_STRATEGIES}")
     index_entries: list[dict[str, Any]] = []  # for parsed_index.json
     timestamp = datetime.now().isoformat(timespec="seconds")
 
-    # Decide effective mode. With a single file, "per_file" is equivalent to "concat" so we
-    # always also produce parsed_results.csv for downstream-tool compatibility.
+    # Decide effective mode. Single-file input is always written as a per-file output
+    # (named after the dataset) — there's no point in a separate combined twin.
     single_file = len(files) == 1
-    write_per_file = args.combine in {"per_file", "both"} or (single_file and args.combine == "per_file")
-    write_combined = args.combine in {"concat", "both", "first"} or single_file
+    if single_file:
+        write_per_file, write_combined = True, False
+    else:
+        write_per_file = args.combine in {"per_file", "both"}
+        write_combined = args.combine in {"concat", "both", "first"}
+
+    COMBINED_NAME = "combined__parsed.csv"
+    COMBINED_META = "combined__parsed.meta.json"
+
+    def parsed_path_for(rel: Path) -> Path:
+        """rel is the source file's path relative to data_dir.
+        Returns the path (under out_dir) where its cleaned CSV will land.
+        Defaults to mirroring data/'s structure, but the per-project
+        `project_reorganize()` hook above can override the layout (without
+        touching data/ itself)."""
+        base = project_reorganize(rel)
+        return base.with_name(f"{base.name}__parsed.csv")
 
     # Sweep stale outputs from a previous run that don't fit the current mode.
     # The parser is the source of truth for `intermediate_data/` — anything it
     # produced before that the current invocation won't reproduce should go.
     prev_index_path = out_dir / "parsed_index.json"
+
+    def _try_unlink(p: Path, label: str) -> None:
+        try:
+            p.unlink()
+            print(f"removed stale {label}")
+        except OSError as e:
+            # Filesystem may not allow deletes (e.g. cowork mount, mounted read-only volumes).
+            print(f"warning: could not remove stale {label}: {e}", file=sys.stderr)
+
     if prev_index_path.exists():
         try:
             prev = json.loads(prev_index_path.read_text())
         except Exception:
             prev = {}
-        def _try_unlink(p: Path, label: str) -> None:
-            try:
-                p.unlink()
-                print(f"removed stale {label}")
-            except OSError as e:
-                # Filesystem may not allow deletes (e.g. cowork mount, mounted read-only volumes).
-                # Don't crash — just warn and let the new outputs land on top.
-                print(f"warning: could not remove stale {label}: {e}", file=sys.stderr)
-        # Remove the previous combined CSV+meta if this run isn't producing one.
-        if not write_combined and prev.get("has_combined_csv"):
-            for stale in (out_dir / "parsed_results.csv", out_dir / "parsed_results.meta.json"):
+        # Clean up the previous combined CSV+meta if this run isn't producing one.
+        # Cover both the new name (combined__parsed.csv) and the legacy name (parsed_results.csv).
+        if not write_combined:
+            prev_combined = prev.get("combined_csv") or COMBINED_NAME
+            for stale_name in {prev_combined, COMBINED_NAME, "parsed_results.csv"}:
+                stale = out_dir / stale_name
                 if stale.exists():
                     _try_unlink(stale, stale.name)
-        # Remove previous per-file mirrors if this run isn't producing per-file outputs.
-        if not write_per_file:
-            for entry in prev.get("per_file_outputs", []):
-                stale_path = out_dir / entry.get("parsed_path", "")
-                if stale_path.exists() and stale_path.is_file():
-                    _try_unlink(stale_path, str(stale_path.relative_to(out_dir)))
+            for stale_meta_name in {COMBINED_META, "parsed_results.meta.json"}:
+                stale = out_dir / stale_meta_name
+                if stale.exists():
+                    _try_unlink(stale, stale.name)
+        # Clean up previous per-file mirrors that aren't going to be re-produced.
+        current_targets = {
+            str(parsed_path_for(f.relative_to(data_dir))) if data_dir in f.parents or f.parent == data_dir else f"{f.stem}__parsed.csv"
+            for f in files
+        } if write_per_file else set()
+        for entry in prev.get("per_file_outputs", []):
+            old_path = entry.get("parsed_path", "")
+            if old_path and old_path not in current_targets:
+                stale = out_dir / old_path
+                if stale.exists() and stale.is_file():
+                    _try_unlink(stale, old_path)
 
     # ---------- per-file mode ----------
     if write_per_file:
@@ -276,12 +391,12 @@ def main() -> int:
             try:
                 rel = f.relative_to(data_dir)
             except ValueError:
-                # File came from --files outside data_dir; flatten the name.
                 rel = Path(f.name)
-            target = (out_dir / rel).with_suffix(".csv")
+            target = out_dir / parsed_path_for(rel)
             target.parent.mkdir(parents=True, exist_ok=True)
 
             df = load_one(f)
+            df = apply_project_specific_cleaning(df, f)
             report = quality_report(df)
             print(f"\n--- {rel} ---")
             print_report(report)
@@ -301,14 +416,13 @@ def main() -> int:
             )
 
     # ---------- combined mode ----------
+    combined_meta_summary: dict[str, Any] | None = None
     if write_combined:
         frames = []
-        if args.combine == "first":
-            chosen_files = files[:1]
-        else:
-            chosen_files = files
+        chosen_files = files[:1] if args.combine == "first" else files
         for f in chosen_files:
             df = load_one(f)
+            df = apply_project_specific_cleaning(df, f)
             try:
                 src = str(f.relative_to(data_dir))
             except ValueError:
@@ -316,20 +430,16 @@ def main() -> int:
             df["__source__"] = src
             frames.append(df)
 
-        if len(frames) == 1:
-            df_all = frames[0]
-        else:
-            df_all = pd.concat(frames, ignore_index=True, sort=False)
-
+        df_all = frames[0] if len(frames) == 1 else pd.concat(frames, ignore_index=True, sort=False)
         report_all = quality_report(df_all)
-        if not write_per_file:  # avoid printing twice
+        if not write_per_file:
             print_report(report_all)
         df_all, strategies_all = clean_one_frame(df_all, report_all, strategy_overrides, args.no_interactive)
 
-        out_csv = out_dir / "parsed_results.csv"
-        out_meta = out_dir / "parsed_results.meta.json"
+        out_csv = out_dir / COMBINED_NAME
+        out_meta = out_dir / COMBINED_META
         df_all.to_csv(out_csv, index=False, quoting=csv.QUOTE_MINIMAL)
-        meta = {
+        combined_meta_summary = {
             "generated_at": timestamp,
             "source_files": [str(f) for f in chosen_files],
             "n_rows_after": int(len(df_all)),
@@ -338,7 +448,7 @@ def main() -> int:
             "strategies_applied": strategies_all,
             "quality_report": report_all,
         }
-        out_meta.write_text(json.dumps(meta, indent=2, default=str))
+        out_meta.write_text(json.dumps(combined_meta_summary, indent=2, default=str))
         print(f"\nwrote {out_csv}  ({len(df_all)} rows, {len(df_all.columns)} columns)")
         print(f"wrote {out_meta}")
         if strategies_all:
@@ -346,18 +456,28 @@ def main() -> int:
             for c, s in strategies_all.items():
                 print(f"  {c}: {s}")
 
-    # ---------- always: write parsed_index.json so downstream tools can discover what's there ----------
+    # Pick the canonical file: combined if it exists, else the lone per-file output if there's
+    # exactly one, else null (multi-file per_file mode — downstream tools must pick a file).
+    canonical_csv: str | None = None
+    if write_combined:
+        canonical_csv = COMBINED_NAME
+    elif len(index_entries) == 1:
+        canonical_csv = index_entries[0]["parsed_path"]
+
     parsed_index = {
         "generated_at": timestamp,
         "data_dir": str(data_dir),
         "combine_mode": args.combine,
         "single_file_input": single_file,
         "has_combined_csv": bool(write_combined),
-        "combined_csv": "parsed_results.csv" if write_combined else None,
+        "combined_csv": COMBINED_NAME if write_combined else None,
+        "canonical_csv": canonical_csv,
         "per_file_outputs": index_entries,
     }
     (out_dir / "parsed_index.json").write_text(json.dumps(parsed_index, indent=2, default=str))
     print(f"wrote {out_dir/'parsed_index.json'}")
+    if canonical_csv:
+        print(f"canonical: {out_dir/canonical_csv}")
     return 0
 
 

@@ -5,7 +5,7 @@
       "id": 1,
       "name": "parser-messy-clinical-csv",
       "prompt": "I've got a clinical trial dataset at data/trial_data_messy.csv that I need to clean up before I can do anything with it. There are some missing values and I think the patient_age column has some text mixed in with the numbers. Can you set up a visualizations/ workspace next to data/ and run the parser? For missing values use median for the numeric columns and just drop rows where notes is missing. Keep the visit_date column as-is for now.",
-      "expected_output": "A `visualizations/` folder is scaffolded next to `data/` with the full structure (info/, scripts/, parse_input.sh, etc.). The parser is run non-interactively, producing `intermediate_data/parsed_results.csv` (200 rows, columns including patient_age as numeric and notes with no missing). `parsed_results.meta.json` records the strategies. `info/context.md` is updated with what was done.",
+      "expected_output": "A `visualizations/` folder is scaffolded next to `data/` with the full structure (info/, scripts/, parse_input.sh, etc.). The parser is run non-interactively, producing `intermediate_data/trial_data_messy__parsed.csv` (200 rows, columns including patient_age as numeric and notes with no missing). The matching `.meta.json` records the strategies. `info/context.md` is updated with what was done. `data/` itself is untouched.",
       "files": ["evals/files/trial_data_messy.csv"],
       "expectations": [
         "A visualizations/ directory exists at the project root",
@@ -17,10 +17,11 @@
         "visualizations/interactive_page.sh exists",
         "visualizations/info/context.md exists and mentions parser/parsing/cleaning",
         "visualizations/info/how_to_use.md exists",
-        "visualizations/intermediate_data/parsed_results.csv exists and has 200 rows or fewer (since drop_row may remove some)",
-        "visualizations/intermediate_data/parsed_results.meta.json exists and records the strategies applied",
-        "patient_age column in parsed_results.csv is numeric (no string values like 'unknown' or 'N/A' remain)",
-        "blood_pressure column in parsed_results.csv has no NaN values (median was applied)",
+        "visualizations/intermediate_data/trial_data_messy__parsed.csv exists and has 200 rows or fewer (since drop_row may remove some)",
+        "visualizations/intermediate_data/trial_data_messy__parsed.meta.json exists and records the strategies applied (or strategies are recorded in parsed_index.json)",
+        "patient_age column in trial_data_messy__parsed.csv is numeric (no string values like 'unknown' or 'N/A' remain)",
+        "blood_pressure column in trial_data_messy__parsed.csv has no NaN values (median was applied)",
+        "data/trial_data_messy.csv is unmodified (same bytes as the input)",
         "context.md was updated to note what subskill ran and where outputs landed"
       ]
     },
@@ -32,7 +33,8 @@
       "files": ["evals/files/flowers.csv"],
       "expectations": [
         "visualizations/ directory exists with the full scaffolded structure",
-        "visualizations/intermediate_data/parsed_results.csv exists with 150 rows",
+        "visualizations/intermediate_data/flowers__parsed.csv exists with 150 rows",
+        "data/flowers.csv is unmodified",
         "At least one subfolder under visualizations/plots/ contains a figure.png file related to petal length vs petal width or scatter",
         "At least one subfolder under visualizations/plots/ contains a figure.png related to violin or sepal_length per species",
         "Each plot subfolder contains a data.csv file (the tidy data used to make the plot)",
@@ -47,7 +49,8 @@
       "files": ["evals/files/sensor_log.csv"],
       "expectations": [
         "visualizations/ directory exists with full scaffolding",
-        "visualizations/intermediate_data/parsed_results.csv exists with 800 rows",
+        "visualizations/intermediate_data/sensor_log__parsed.csv exists with 800 rows",
+        "data/sensor_log.csv is unmodified",
         "visualizations/streamlit/index.py exists",
         "Either streamlit/index.py or some file under streamlit/pages/ contains code that filters by 'site' and 'sensor' (uses st.selectbox/multiselect/radio for these columns)",
         "Either streamlit/index.py or some file under streamlit/pages/ contains code that plots value over time (uses st.line_chart, sns.lineplot, or st.altair_chart with x=ts and y=value)",

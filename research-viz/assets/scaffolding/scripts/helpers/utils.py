@@ -52,6 +52,7 @@ def set_research_theme() -> None:
 
 
 def load_cleaned(parsed_csv: str | Path) -> pd.DataFrame:
-    """Load parsed_results.csv. Future-proofed: a single place to do conversions if needed."""
+    """Load a `<dataset>__parsed.csv` (or any cleaned intermediate CSV).
+    Future-proofed: a single place to do conversions if needed."""
     df = pd.read_csv(parsed_csv)
     return df

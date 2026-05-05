@@ -1,14 +1,10 @@
 """Landing page for the streamlit explorer.
 
-Subpages auto-discovered by streamlit live in `streamlit/pages/`. This file is
-intentionally minimal — it shows what the workspace contains and lets the user
-peek at the cleaned dataset. Build domain-specific exploration pages as
-new files in `pages/`.
-
-Handles two parser layouts:
-  - **single combined** dataset (`intermediate_data/parsed_results.csv`),
-  - **per-file** mode where each input file gets its own parsed CSV mirroring `data/`
-    (no combined CSV; `parsed_index.json` lists what's there).
+Shows the cleaned datasets listed in `intermediate_data/parsed_index.json`
+(named `<original_dataset_name>__parsed.csv` per input). If the parser ran
+in per-file mode against many input files, the sidebar gets a selector for
+switching between them. Subpages auto-discovered by streamlit live in
+`streamlit/pages/`.
 """
 from __future__ import annotations
 
@@ -22,17 +18,16 @@ import streamlit as st
 HERE = Path(__file__).resolve().parent
 VIZ_ROOT = HERE.parent
 INTER = VIZ_ROOT / "intermediate_data"
-PARSED_CSV = INTER / "parsed_results.csv"
-PARSED_META = INTER / "parsed_results.meta.json"
 PARSED_INDEX = INTER / "parsed_index.json"
 CONTEXT_MD = VIZ_ROOT / "info" / "context.md"
 
 st.set_page_config(page_title="research-viz explorer", layout="wide")
 st.title("research-viz explorer")
 
-if not PARSED_CSV.exists() and not PARSED_INDEX.exists():
+if not PARSED_INDEX.exists():
     st.warning(
-        "No parsed dataset yet. Run `bash visualizations/parse_input.sh` first, then refresh this page."
+        "No parsed dataset yet. Run `bash visualizations/parse_input.sh` "
+        "(or `python visualizations/scripts/parser.py --data-dir ../data --out visualizations/intermediate_data`) first, then refresh."
     )
     st.stop()
 
@@ -42,46 +37,47 @@ def load_parsed(path: str, mtime: float) -> pd.DataFrame:  # noqa: ARG001  (mtim
     return pd.read_csv(path)
 
 
-# Decide which dataset(s) we're showing.
-chosen_label: str
-chosen_path: Path
-if PARSED_INDEX.exists():
-    idx = json.loads(PARSED_INDEX.read_text())
-    per_file = idx.get("per_file_outputs", [])
-    has_combined = idx.get("has_combined_csv") and PARSED_CSV.exists()
+idx = json.loads(PARSED_INDEX.read_text())
+per_file = idx.get("per_file_outputs", [])
+canonical = idx.get("canonical_csv")
+combined = idx.get("combined_csv")
 
-    options: list[tuple[str, Path]] = []
-    if has_combined:
-        options.append(("Combined (parsed_results.csv)", PARSED_CSV))
-    for entry in per_file:
-        options.append((entry["source_relative"], INTER / entry["parsed_path"]))
+# Build the list of selectable datasets. The canonical (combined or sole per-file)
+# leads, with any other per-file outputs available below it.
+options: list[tuple[str, Path]] = []
+if combined:
+    options.append((f"Combined ({combined})", INTER / combined))
+seen = {opt[1] for opt in options}
+for entry in per_file:
+    p = INTER / entry["parsed_path"]
+    if p in seen:
+        continue
+    options.append((entry["source_relative"], p))
+    seen.add(p)
 
-    if len(options) > 1:
-        labels = [o[0] for o in options]
-        st.sidebar.markdown("### Dataset")
-        chosen_label = st.sidebar.radio(
-            "Pick which parsed file to inspect", labels, index=0, label_visibility="collapsed"
-        )
-        chosen_path = dict(options)[chosen_label]
-        st.caption(f"Showing **{chosen_label}** ({len(per_file)} per-file outputs available; "
-                   "switch in the sidebar).")
-    else:
-        chosen_label, chosen_path = options[0]
+if not options:
+    st.warning("parsed_index.json has no entries — re-run the parser.")
+    st.stop()
+
+if len(options) > 1:
+    st.sidebar.markdown("### Dataset")
+    labels = [o[0] for o in options]
+    chosen_label = st.sidebar.radio(
+        "Pick which parsed file to inspect", labels, index=0, label_visibility="collapsed"
+    )
+    chosen_path = dict(options)[chosen_label]
+    st.caption(
+        f"Showing **{chosen_label}** ({len(per_file)} per-file outputs available; switch in the sidebar)."
+    )
 else:
-    chosen_label, chosen_path = "parsed_results.csv", PARSED_CSV
-
+    chosen_label, chosen_path = options[0]
 
 df = load_parsed(str(chosen_path), chosen_path.stat().st_mtime)
 
 c1, c2, c3 = st.columns(3)
 c1.metric("rows", f"{len(df):,}")
 c2.metric("columns", len(df.columns))
-if PARSED_META.exists() and chosen_path == PARSED_CSV:
-    meta = json.loads(PARSED_META.read_text())
-    c3.metric("source files", len(meta.get("source_files", [])))
-elif PARSED_INDEX.exists():
-    idx = json.loads(PARSED_INDEX.read_text())
-    c3.metric("per-file outputs", len(idx.get("per_file_outputs", [])))
+c3.metric("per-file outputs", len(per_file))
 
 with st.expander("Schema", expanded=True):
     schema = pd.DataFrame(
@@ -106,5 +102,5 @@ with st.expander("Workspace context (info/context.md)"):
 st.divider()
 st.caption(
     "Add new exploration pages as Python files under `streamlit/pages/`. "
-    "They will appear in the sidebar automatically. See `info/how_to_use.md` for details."
+    "They appear in the sidebar automatically. See `info/how_to_use.md` for details."
 )
